@@ -1,0 +1,19 @@
+name: "mhlw"
+version: "1.0.0"
+
+profile: "mhlw"
+
+model-paths: ["models"]
+macro-paths: ["macros", "shared/macros"]
+clean-targets: ["target", "dbt_packages"]
+
+models:
+  mhlw:
+    +database: mhlw
+    kaigo:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
