@@ -17,3 +17,10 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    shougai:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
