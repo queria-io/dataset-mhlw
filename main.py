@@ -1,8 +1,10 @@
 """厚生労働省オープンデータの取得 + dbt ビルド。
 
-1. kaigo: 介護サービス情報公表システムから全サービス種類の事業所 CSV を取得し、
-          英語列にそろえた NDJSON へ統合する。
-2. dbt:   dbt ビルド。
+1. kaigo:   介護サービス情報公表システムから全サービス種類の事業所 CSV を取得し、
+            英語列にそろえた NDJSON へ統合する。
+2. shougai: 障害福祉サービス等情報公表システムから全サービス種類の事業所 CSV を取得し、
+            英語列にそろえた NDJSON へ統合する。
+3. dbt:     dbt ビルド。
 """
 
 import logging
@@ -10,13 +12,15 @@ from pathlib import Path
 
 from dbt.cli.main import dbtRunner
 
-from kaigo import download_and_flatten
+import kaigo
+import shougai
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("pipelines")
 
 FDL_DIR = Path(".fdl")
-NDJSON_PATH = FDL_DIR / "kaigo_establishment.ndjson"
+KAIGO_NDJSON_PATH = FDL_DIR / "kaigo_establishment.ndjson"
+SHOUGAI_NDJSON_PATH = FDL_DIR / "shougai_establishment.ndjson"
 
 
 def dbt_build() -> None:
@@ -30,11 +34,15 @@ def dbt_build() -> None:
 def main() -> None:
     FDL_DIR.mkdir(exist_ok=True)
 
-    logger.info("1/2: kaigo (介護サービス事業所)")
-    rows = download_and_flatten(NDJSON_PATH)
+    logger.info("1/3: kaigo (介護サービス事業所)")
+    rows = kaigo.download_and_flatten(KAIGO_NDJSON_PATH)
     logger.info(f"  kaigo_establishment.ndjson: {rows} rows")
 
-    logger.info("2/2: dbt build")
+    logger.info("2/3: shougai (障害福祉サービス等事業所)")
+    rows = shougai.download_and_flatten(SHOUGAI_NDJSON_PATH)
+    logger.info(f"  shougai_establishment.ndjson: {rows} rows")
+
+    logger.info("3/3: dbt build")
     dbt_build()
 
 
