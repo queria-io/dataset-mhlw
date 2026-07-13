@@ -2,7 +2,9 @@
 
 1. kaigo: 介護サービス情報公表システムから全サービス種類の事業所 CSV を取得し、
           英語列にそろえた NDJSON へ統合する。
-2. dbt:   dbt ビルド。
+2. josei: 女性の活躍推進企業データベースの全体版 CSV を取得し、企業属性と主要指標に
+          絞った NDJSON へ整形する。
+3. dbt:   dbt ビルド。
 """
 
 import logging
@@ -10,13 +12,15 @@ from pathlib import Path
 
 from dbt.cli.main import dbtRunner
 
-from kaigo import download_and_flatten
+import josei
+import kaigo
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("pipelines")
 
 FDL_DIR = Path(".fdl")
-NDJSON_PATH = FDL_DIR / "kaigo_establishment.ndjson"
+KAIGO_NDJSON_PATH = FDL_DIR / "kaigo_establishment.ndjson"
+JOSEI_NDJSON_PATH = FDL_DIR / "josei_katsuyaku_company.ndjson"
 
 
 def dbt_build() -> None:
@@ -30,11 +34,15 @@ def dbt_build() -> None:
 def main() -> None:
     FDL_DIR.mkdir(exist_ok=True)
 
-    logger.info("1/2: kaigo (介護サービス事業所)")
-    rows = download_and_flatten(NDJSON_PATH)
+    logger.info("1/3: kaigo (介護サービス事業所)")
+    rows = kaigo.download_and_flatten(KAIGO_NDJSON_PATH)
     logger.info(f"  kaigo_establishment.ndjson: {rows} rows")
 
-    logger.info("2/2: dbt build")
+    logger.info("2/3: josei (女性活躍推進企業)")
+    rows = josei.download_and_flatten(JOSEI_NDJSON_PATH)
+    logger.info(f"  josei_katsuyaku_company.ndjson: {rows} rows")
+
+    logger.info("3/3: dbt build")
     dbt_build()
 
 

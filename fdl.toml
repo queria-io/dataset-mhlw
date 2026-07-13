@@ -18,12 +18,14 @@ license_url = "https://www.mhlw.go.jp/chosakuken/index.html"
 title = "厚生労働省"
 description = """厚生労働省が公開するオープンデータ。
 介護サービス情報公表システムから抽出した全国の介護サービス事業所情報（所在地・緯度経度・
-法人番号・サービス種類・定員など）を収録する。"""
+法人番号・サービス種類・定員など）や、女性の活躍推進企業データベースに企業が公表した
+女性活躍・両立支援の指標（管理職女性割合・男女賃金差異・育児休業取得率など）を収録する。"""
 cover = "🏥"
-tags = ['介護', '福祉', '事業所', 'GIS', '法人番号', '厚生労働省']
+tags = ['介護', '福祉', '事業所', 'GIS', '法人番号', '女性活躍', '両立支援', 'ESG', '厚生労働省']
 source_url = "https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html"
 repository_url = "https://github.com/queria-io/dataset-mhlw"
 schedule = "yearly"
 
 [meta.schemas]
 kaigo.title = "介護サービス"
+josei_katsuyaku.title = "女性活躍推進企業"

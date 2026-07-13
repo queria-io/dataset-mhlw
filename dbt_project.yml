@@ -17,3 +17,10 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    josei_katsuyaku:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
