@@ -18,12 +18,14 @@ license_url = "https://www.mhlw.go.jp/chosakuken/index.html"
 title = "厚生労働省"
 description = """厚生労働省が公開するオープンデータ。
 介護サービス情報公表システムから抽出した全国の介護サービス事業所情報（所在地・緯度経度・
-法人番号・サービス種類・定員など）を収録する。"""
+法人番号・サービス種類・定員など）と、NDB オープンデータの特定健診 検査値の都道府県別・
+性年齢階級別分布を収録する。"""
 cover = "🏥"
-tags = ['介護', '福祉', '事業所', 'GIS', '法人番号', '厚生労働省']
+tags = ['介護', '福祉', '事業所', 'GIS', '法人番号', '特定健診', '健康診断', 'NDB', '厚生労働省']
 source_url = "https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html"
 repository_url = "https://github.com/queria-io/dataset-mhlw"
 schedule = "yearly"
 
 [meta.schemas]
 kaigo.title = "介護サービス"
+ndb.title = "特定健診（NDB）"

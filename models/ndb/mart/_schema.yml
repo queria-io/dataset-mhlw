@@ -1,0 +1,61 @@
+version: 2
+
+models:
+  - name: health_checkup
+    description: |
+      特定健診（特定健康診査）の検査値分布。NDB オープンデータ 第 11 回（2023 年度）の
+      「特定健診 検査」を、検査項目 × 都道府県 × 検査値階層 × 性 × 年齢階級 の long 形式で
+      収録する。値は各区分に該当する受診者数（人数）。
+      検査項目は BMI・腹囲・血圧・血糖（HbA1C／空腹時／随時）・脂質（HDL／LDL／中性脂肪）・
+      肝機能（GOT／GPT／γ-GT）・腎機能（血清クレアチニン／eGFR）・尿検査（尿糖／尿蛋白）・
+      ヘモグロビン・心電図・眼底検査（各分類）の 25 項目。検査値階層は数値区分のほか、
+      眼底検査の分類・尿検査の判定・心電図の所見など項目により異なる。
+      集計結果が 10 未満のセルは秘匿されており人数は NULL（元データで「‐」表示）。
+      年齢階級は 40〜74 歳を 5 歳刻みで、性の小計「中計」は収録しない。
+      都道府県コードで lg_code / census / address_br と結合できる。
+      出典: NDB オープンデータ（厚生労働省）のデータを加工して作成。
+      https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html
+    access: public
+    config:
+      meta:
+        title: "特定健診 検査値分布"
+        published: true
+        source_url: "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html"
+        tags: ["特定健診", "健康診断", "NDB", "医療", "厚生労働省"]
+    columns:
+      - name: fiscal_year
+        meta:
+          title: 年度
+          description: 集計対象年度（西暦）
+      - name: test_item
+        meta:
+          title: 検査項目
+          description: BMI・HbA1C・収縮期血圧・眼底検査（SCOTT分類）など、特定健診の検査項目
+      - name: unit
+        meta:
+          title: 単位
+          description: 検査値階層の単位・注記（kg/㎡・mmHg・％※NGSP値 など）。分類項目は NULL
+      - name: prefecture_code
+        meta:
+          title: 都道府県コード
+          description: 全国地方公共団体コードの都道府県 2 桁。都道府県判別不可は NULL。lg_code / census と結合可
+      - name: prefecture
+        meta:
+          title: 都道府県名
+          description: 施設所在地の都道府県名。判別不可は「都道府県判別不可」
+      - name: sex
+        meta:
+          title: 性
+          description: 男／女
+      - name: age_class
+        meta:
+          title: 年齢階級
+          description: 40〜74 歳を 5 歳刻みで区分（特定健診の対象年齢）
+      - name: value_class
+        meta:
+          title: 検査値階層
+          description: 検査値の区分。数値範囲（例 25.0以上30.0未満）・分類（眼底検査）・判定（尿検査 －／±／＋）・所見（心電図）など項目により異なる
+      - name: count
+        meta:
+          title: 人数
+          description: 当該区分に該当する受診者数。集計結果 10 未満の秘匿セルは NULL

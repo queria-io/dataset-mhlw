@@ -17,3 +17,10 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    ndb:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
