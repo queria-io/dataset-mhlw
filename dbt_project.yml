@@ -17,6 +17,20 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    shougai:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
+    ndb:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
     josei_katsuyaku:
       raw:
         +materialized: table
