@@ -5,7 +5,9 @@
 2. shougai: 障害福祉サービス等情報公表システムから全サービス種類の事業所 CSV を取得し、
             英語列にそろえた NDJSON へ統合する。
 3. ndb:     NDB オープンデータの特定健診 検査値 Excel を取得し、long 形式の NDJSON へ統合する。
-4. dbt:     dbt ビルド。
+4. josei:   女性の活躍推進企業データベースの全体版 CSV を取得し、企業属性と主要指標に
+            絞った NDJSON へ整形する。
+5. dbt:     dbt ビルド。
 """
 
 import logging
@@ -13,6 +15,7 @@ from pathlib import Path
 
 from dbt.cli.main import dbtRunner
 
+import josei
 import kaigo
 import ndb
 import shougai
@@ -24,6 +27,7 @@ FDL_DIR = Path(".fdl")
 KAIGO_NDJSON_PATH = FDL_DIR / "kaigo_establishment.ndjson"
 SHOUGAI_NDJSON_PATH = FDL_DIR / "shougai_establishment.ndjson"
 NDB_NDJSON_PATH = FDL_DIR / "ndb_health_checkup.ndjson"
+JOSEI_NDJSON_PATH = FDL_DIR / "josei_katsuyaku_company.ndjson"
 
 
 def dbt_build() -> None:
@@ -37,19 +41,23 @@ def dbt_build() -> None:
 def main() -> None:
     FDL_DIR.mkdir(exist_ok=True)
 
-    logger.info("1/4: kaigo (介護サービス事業所)")
+    logger.info("1/5: kaigo (介護サービス事業所)")
     rows = kaigo.download_and_flatten(KAIGO_NDJSON_PATH)
     logger.info(f"  kaigo_establishment.ndjson: {rows} rows")
 
-    logger.info("2/4: shougai (障害福祉サービス等事業所)")
+    logger.info("2/5: shougai (障害福祉サービス等事業所)")
     rows = shougai.download_and_flatten(SHOUGAI_NDJSON_PATH)
     logger.info(f"  shougai_establishment.ndjson: {rows} rows")
 
-    logger.info("3/4: ndb (特定健診 検査値分布)")
+    logger.info("3/5: ndb (特定健診 検査値分布)")
     rows = ndb.download_and_flatten(NDB_NDJSON_PATH)
     logger.info(f"  ndb_health_checkup.ndjson: {rows} rows")
 
-    logger.info("4/4: dbt build")
+    logger.info("4/5: josei (女性活躍推進企業)")
+    rows = josei.download_and_flatten(JOSEI_NDJSON_PATH)
+    logger.info(f"  josei_katsuyaku_company.ndjson: {rows} rows")
+
+    logger.info("5/5: dbt build")
     dbt_build()
 
 

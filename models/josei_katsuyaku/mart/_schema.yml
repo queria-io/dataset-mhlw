@@ -1,0 +1,108 @@
+version: 2
+
+models:
+  - name: josei_company
+    description: |
+      女性の活躍推進企業データベースに企業が公表した、女性活躍・両立支援の主要指標。
+      女性活躍推進法・次世代育成支援対策推進法に基づく情報公表制度で、企業が任意に
+      公表した指標を 1 企業 1 レコードで収録する。管理職・役員に占める女性割合、
+      男女の賃金の差異、育児休業取得率、平均残業時間、有給休暇取得率、えるぼし・
+      くるみん認定などを持つ。
+      指標は企業の任意公表のため、開示していない企業は当該列が NULL になる。
+      育児休業取得率は雇用管理区分ごとに公表されるが、本テーブルでは先頭区分
+      （childcare_leave_category）の代表値のみを収録する。
+      法人番号で houjin_bangou / gbizinfo と結合でき、ESG・人的資本分析に利用できる。
+      元データは 236 列に及ぶ横持ちのため、企業単位で単一値となる主要指標に絞っている。
+      出典: 女性の活躍推進企業データベース（厚生労働省）のオープンデータを加工して作成。
+      https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/
+    access: public
+    config:
+      meta:
+        title: "女性活躍推進企業の指標"
+        published: true
+        source_url: "https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/"
+        tags: ["女性活躍", "両立支援", "ESG", "人的資本", "法人番号"]
+    columns:
+      - name: corporate_number
+        meta:
+          title: 法人番号
+          description: 13 桁の法人番号。houjin_bangou / gbizinfo と結合可。未公表は NULL（一部に重複あり）
+      - name: company_name
+        meta:
+          title: 企業名
+      - name: industry
+        meta:
+          title: 業種
+          description: 日本標準産業分類に準じた大分類相当の業種区分
+      - name: industry_detail
+        meta:
+          title: 業種（詳細分類）
+      - name: prefecture
+        meta:
+          title: 都道府県
+          description: 本社所在の都道府県名
+      - name: company_size
+        meta:
+          title: 企業規模
+          description: 常時雇用する労働者数の区分（例：10人未満 / 101～300人 / 5001人以上）
+      - name: market_segment
+        meta:
+          title: 市場区分
+          description: 上場企業の市場区分（プライム / スタンダード / グロースなど）。非上場は NULL
+      - name: securities_code
+        meta:
+          title: 証券コード
+          description: 上場企業の証券コード。非上場は NULL
+      - name: eruboshi_stage
+        meta:
+          title: えるぼし認定
+          description: 女性活躍推進法に基づくえるぼし認定の段階（認定段階１〜３ / 認定なし等）
+      - name: kurumin
+        meta:
+          title: くるみん認定
+          description: 次世代育成支援対策推進法に基づくくるみん認定の状況（認定あり / 認定なし等）
+      - name: women_in_kakaricho_pct
+        meta:
+          title: 係長級に占める女性割合(%)
+      - name: women_in_management_pct
+        meta:
+          title: 管理職に占める女性割合(%)
+      - name: women_on_board_pct
+        meta:
+          title: 役員に占める女性割合(%)
+      - name: gender_wage_gap_all_pct
+        meta:
+          title: 男女の賃金の差異（全労働者, %）
+          description: 男性の賃金に対する女性の賃金の割合(%)。全労働者
+      - name: gender_wage_gap_regular_pct
+        meta:
+          title: 男女の賃金の差異（正規雇用労働者, %）
+      - name: gender_wage_gap_nonregular_pct
+        meta:
+          title: 男女の賃金の差異（非正規雇用労働者, %）
+      - name: wage_gap_period
+        meta:
+          title: 賃金の差異の対象期間
+          description: 男女の賃金の差異を算出した対象期間（例：2025年4月1日～2026年3月31日）
+      - name: childcare_leave_category
+        meta:
+          title: 育児休業取得率の雇用管理区分
+          description: 育児休業取得率を公表した先頭の雇用管理区分（例：正社員 / 全労働者）
+      - name: childcare_leave_male_pct
+        meta:
+          title: 育児休業取得率（男性, %）
+          description: childcare_leave_category の区分における男性の育児休業取得率(%)
+      - name: childcare_leave_female_pct
+        meta:
+          title: 育児休業取得率（女性, %）
+          description: childcare_leave_category の区分における女性の育児休業取得率(%)
+      - name: avg_monthly_overtime_hours
+        meta:
+          title: 一月当たりの平均残業時間(時間)
+      - name: paid_leave_rate_pct
+        meta:
+          title: 年次有給休暇の取得率(%)
+      - name: last_updated
+        meta:
+          title: データの最終更新日
+          description: 企業が当該データを最終更新した日

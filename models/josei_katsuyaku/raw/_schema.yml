@@ -1,0 +1,7 @@
+version: 2
+
+models:
+  - name: raw_josei_company
+    description: |
+      女性の活躍推進企業データベースの企業別生データ。
+      全体版 CSV から企業属性と主要指標に絞って main.py が整形した NDJSON を読み込む。

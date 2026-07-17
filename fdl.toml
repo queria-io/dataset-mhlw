@@ -20,9 +20,11 @@ description = """厚生労働省が公開するオープンデータ。
 介護サービス情報公表システムから抽出した全国の介護サービス事業所情報（kaigo）と、
 障害福祉サービス等情報公表システムから抽出した全国の障害福祉サービス等事業所情報
 （shougai）を収録する。いずれも所在地・緯度経度・法人番号・サービス種類・定員などを持つ。
-あわせて NDB オープンデータの特定健診 検査値の都道府県別・性年齢階級別分布（ndb）を収録する。"""
+あわせて NDB オープンデータの特定健診 検査値の都道府県別・性年齢階級別分布（ndb）と、
+女性の活躍推進企業データベースに企業が公表した女性活躍・両立支援の指標
+（管理職女性割合・男女賃金差異・育児休業取得率など, josei_katsuyaku）を収録する。"""
 cover = "🏥"
-tags = ['介護', '障害福祉', '福祉', '事業所', 'GIS', '法人番号', '特定健診', '健康診断', 'NDB', '厚生労働省']
+tags = ['介護', '障害福祉', '福祉', '事業所', 'GIS', '法人番号', '特定健診', '健康診断', 'NDB', '女性活躍', '両立支援', 'ESG', '厚生労働省']
 source_url = "https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html"
 repository_url = "https://github.com/queria-io/dataset-mhlw"
 schedule = "yearly"
@@ -31,3 +33,4 @@ schedule = "yearly"
 kaigo.title = "介護サービス"
 shougai.title = "障害福祉サービス"
 ndb.title = "特定健診（NDB）"
+josei_katsuyaku.title = "女性活躍推進企業"
