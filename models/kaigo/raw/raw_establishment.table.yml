@@ -1,0 +1,6 @@
+schema: kaigo
+name: raw_establishment
+description: '介護サービス情報公表システムの事業所生データ。
+
+  全サービス種類の全国 CSV を main.py が統合した NDJSON を読み込む。'
+published: false

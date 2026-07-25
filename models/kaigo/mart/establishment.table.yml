@@ -1,0 +1,93 @@
+schema: kaigo
+name: establishment
+title: 介護サービス事業所
+description: '全国の介護サービス事業所。介護保険の対象となる介護サービスを提供する事業所を
+
+  1 事業所 1 レコードで収録し、所在地・緯度経度・法人番号・サービス種類・定員などを持つ。
+
+  同一の法人・所在地でも提供するサービス種類ごとに別レコードになる。
+
+  緯度経度は欠測（0.0）や日本国外の誤登録値を除外し、有効な値のみ保持する
+
+  （無効・欠測は NULL）。
+
+  出典: 介護サービス情報公表システム（厚生労働省）のデータを加工して作成。
+
+  https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html'
+keywords:
+  - 介護
+  - 福祉
+  - 事業所
+  - GIS
+  - 法人番号
+published: true
+sources:
+  - path: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
+fields:
+  - name: establishment_number
+    title: 事業所番号
+    description: 介護保険事業所番号（10 桁）。サービス種類が異なると同一番号が複数行に現れる
+  - name: service_type
+    title: サービスの種類
+    description: 訪問介護・通所介護・介護老人福祉施設など、提供する介護サービスの種類
+  - name: name
+    title: 事業所名
+  - name: name_kana
+    title: 事業所名カナ
+  - name: local_gov_code
+    title: 地方公共団体コード
+    description: 全国地方公共団体コード（6 桁 = 5 桁自治体コード + チェックデジット）
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 地方公共団体コードの上 2 桁
+  - name: city_code
+    title: 市区町村コード
+    description: 地方公共団体コードの上 5 桁（チェックデジットを除く）。lg_code / address_br と結合可
+  - name: prefecture
+    title: 都道府県名
+  - name: city
+    title: 市区町村名
+  - name: address
+    title: 住所
+  - name: address_note
+    title: 方書
+    description: ビル名・建物名など住所の補足
+  - name: latitude
+    title: 緯度
+    description: 十進度（世界測地系）。欠測・国外誤登録は NULL
+  - name: longitude
+    title: 経度
+    description: 十進度（世界測地系）。欠測・国外誤登録は NULL
+  - name: geometry
+    title: ジオメトリ
+    description: 緯度経度が有効な事業所の位置（POINT）
+  - name: phone
+    title: 電話番号
+  - name: fax
+    title: FAX 番号
+  - name: corporate_number
+    title: 法人番号
+    description: 13 桁の法人番号。houjin_bangou と結合可。個人事業者等は NULL
+  - name: corporate_name
+    title: 法人の名称
+  - name: capacity
+    title: 定員
+    description: 事業所の定員。定員概念のないサービスは 0、非公表は NULL
+  - name: available_days
+    title: 利用可能曜日
+  - name: available_days_note
+    title: 利用可能曜日特記事項
+  - name: url
+    title: URL
+    description: 事業所の公表 URL
+  - name: shared_with_disability
+    title: 高齢者と障害者が同時利用可
+    description: 高齢者と障害者が同時一体的に利用できるサービスか（あり／なし）
+  - name: meets_ltci_standard
+    title: 介護保険の指定基準
+    description: 介護保険の通常の指定基準を満たしているか（通常の指定基準／共生型 等）
+  - name: meets_disability_welfare_standard
+    title: 障害福祉の指定基準
+    description: 障害福祉の通常の指定基準を満たしているか
+  - name: note
+    title: 備考

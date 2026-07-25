@@ -1,0 +1,77 @@
+spec_version: "0.1"
+name: mhlw
+title: 厚生労働省
+description: |-
+  厚生労働省が公開するオープンデータ。
+  介護サービス情報公表システムから抽出した全国の介護サービス事業所情報（kaigo）と、
+  障害福祉サービス等情報公表システムから抽出した全国の障害福祉サービス等事業所情報
+  （shougai）を収録する。いずれも所在地・緯度経度・法人番号・サービス種類・定員などを持つ。
+  あわせて NDB オープンデータの特定健診 検査値の都道府県別・性年齢階級別分布（ndb）と、
+  女性の活躍推進企業データベースに企業が公表した女性活躍・両立支援の指標
+  （管理職女性割合・男女賃金差異・育児休業取得率など, josei_katsuyaku）を収録する。
+keywords:
+  - 介護
+  - 障害福祉
+  - 福祉
+  - 事業所
+  - GIS
+  - 法人番号
+  - 特定健診
+  - 健康診断
+  - NDB
+  - 女性活躍
+  - 両立支援
+  - ESG
+  - 厚生労働省
+homepage: https://github.com/queria-io/dataset-mhlw
+language: ja
+
+licenses:
+  - JP-PDL-1.0
+
+sources:
+  - title: 介護サービス情報公表システム オープンデータ
+    path: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
+  - title: 女性の活躍推進企業データベース オープンデータ
+    path: https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/
+
+contributors:
+  - title: 厚生労働省
+    path: https://www.mhlw.go.jp/
+    roles: [rightsHolder]
+
+spatial_coverage: [JP]
+update_frequency: yearly
+cover: 🏥
+
+ai_context:
+  instructions: |
+    介護・障害福祉の事業所を地域ごとに数える、健診の検査値の分布を都道府県で比べる、
+    企業の女性活躍指標を見る、といった用途に使う。4つのスキーマは出どころも粒度も別物。
+    kaigo.establishment（22万3162件）と shougai.establishment（20万9452件）は
+    「事業所 × サービス種類」で1行。同じ事業所が複数のサービスを提供すると複数行になるので、
+    事業所数を数えるときは establishment_number で重複を除く。
+    緯度経度は元データに欠測（0.0）や国外の誤登録が混ざるため、日本の範囲外は NULL にしている
+    （kaigo で540件）。地図に出すときは NULL を除く。
+    ndb.health_checkup は特定健診の検査値の都道府県 × 性 × 年齢階級別の分布で、
+    個人単位ではなく集計値。
+    josei_katsuyaku.josei_company は企業の任意公表なので、開示していない企業の列は NULL になる。
+    「NULL＝0」ではない。育児休業取得率は雇用管理区分ごとに公表されるが、
+    先頭区分の代表値だけを収録している。
+    法人番号（corporate_number）で houjin_bangou / gbizinfo と結合できる。
+    介護・障害福祉の事業所は市区町村コードを持つので lg_code / address_br と結合できる。
+  synonyms: [介護事業所, 障害福祉サービス, 特定健診, NDB, 女性活躍推進, えるぼし]
+  examples:
+    - 市区町村別の介護事業所の数を出したい
+    - 訪問介護の事業所を地図に出したい
+    - 都道府県別に特定健診の検査値の分布を比べたい
+
+schemas:
+  - name: kaigo
+    title: 介護サービス
+  - name: shougai
+    title: 障害福祉サービス
+  - name: ndb
+    title: 特定健診（NDB）
+  - name: josei_katsuyaku
+    title: 女性活躍推進企業

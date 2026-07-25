@@ -1,0 +1,8 @@
+schema: ndb
+name: raw_health_checkup
+description: 'NDB オープンデータ 特定健診 検査値の生データ。
+
+  検査項目別の「都道府県別性年齢階級別分布」Excel を main.py が long 形式に統合した
+
+  NDJSON を読み込む。'
+published: false
