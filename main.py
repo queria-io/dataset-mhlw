@@ -23,11 +23,11 @@ import shougai
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 logger = logging.getLogger("pipelines")
 
-FDL_DIR = Path(".fdl")
-KAIGO_NDJSON_PATH = FDL_DIR / "kaigo_establishment.ndjson"
-SHOUGAI_NDJSON_PATH = FDL_DIR / "shougai_establishment.ndjson"
-NDB_NDJSON_PATH = FDL_DIR / "ndb_health_checkup.ndjson"
-JOSEI_NDJSON_PATH = FDL_DIR / "josei_katsuyaku_company.ndjson"
+WORK_DIR = Path(".queria")
+KAIGO_NDJSON_PATH = WORK_DIR / "kaigo_establishment.ndjson"
+SHOUGAI_NDJSON_PATH = WORK_DIR / "shougai_establishment.ndjson"
+NDB_NDJSON_PATH = WORK_DIR / "ndb_health_checkup.ndjson"
+JOSEI_NDJSON_PATH = WORK_DIR / "josei_katsuyaku_company.ndjson"
 
 
 def dbt_build() -> None:
@@ -39,7 +39,7 @@ def dbt_build() -> None:
 
 
 def main() -> None:
-    FDL_DIR.mkdir(exist_ok=True)
+    WORK_DIR.mkdir(exist_ok=True)
 
     logger.info("1/5: kaigo (介護サービス事業所)")
     rows = kaigo.download_and_flatten(KAIGO_NDJSON_PATH)
