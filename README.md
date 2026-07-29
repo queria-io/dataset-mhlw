@@ -140,11 +140,11 @@ CC BY 4.0 互換）で提供される。いずれも出典表示のうえ商用�
 
 ## ビルド
 
-fdl 経由でビルドする（dbt を直接実行しない）。
+queria 経由でビルドする（dbt を直接実行しない）。
 
 ```bash
 uv sync
-bash scripts/build.sh local
+bash scripts/build.sh
 ```
 
 パイプラインは `main.py` が担う:

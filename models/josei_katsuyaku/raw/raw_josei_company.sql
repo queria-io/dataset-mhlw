@@ -1,12 +1,12 @@
 {# 女性の活躍推進企業データベースの企業別生データ。
-   main.py が全体版 CSV を主要列に絞って .fdl/josei_katsuyaku_company.ndjson に保存する。
+   main.py が全体版 CSV を主要列に絞って .queria/josei_katsuyaku_company.ndjson に保存する。
    型変換は stg 以降で行うため全列 VARCHAR で読む。 #}
 
 {{ config(materialized='table') }}
 
 select *
 from read_json(
-    '.fdl/josei_katsuyaku_company.ndjson',
+    '.queria/josei_katsuyaku_company.ndjson',
     format='newline_delimited',
     columns={
         'company_name': 'VARCHAR',
