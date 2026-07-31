@@ -7,13 +7,16 @@ CSV を ZIP で公開している。各行が 1 企業で、236 列に多数の�
 英語名へそろえた 1 本の NDJSON に整形する。型変換は dbt（stg / mart）で行う。
 
 配信元は素の User-Agent を持たないリクエストを 403 で弾くため、ブラウザ相当の
-User-Agent を付けて取得する。
+User-Agent を付けて取得する。加えて日本国外からのアクセスも 403 になる（前段の
+AWS ロードバランサが落とすため、ヘッダーや Cookie では通らない）。このパイプラインは
+日本国内から実行する必要がある。README「ビルド」を参照。
 """
 
 import csv
 import io
 import json
 import sys
+import urllib.error
 import urllib.request
 import zipfile
 from pathlib import Path
@@ -59,8 +62,16 @@ COLUMNS: dict[int, str] = {
 def _fetch_csv_text() -> str:
     """全体版 ZIP を取得し、同梱 CSV の本文（UTF-8 BOM 付き）を返す。"""
     req = urllib.request.Request(ZIP_URL, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req) as resp:
-        blob = resp.read()
+    try:
+        with urllib.request.urlopen(req) as resp:
+            blob = resp.read()
+    except urllib.error.HTTPError as e:
+        if e.code == 403:
+            raise RuntimeError(
+                f"{ZIP_URL} が 403 を返した。配信元は日本国外からのアクセスを"
+                "受け付けないため、日本国内の環境から実行する必要がある。"
+            ) from e
+        raise
     with zipfile.ZipFile(io.BytesIO(blob)) as zf:
         name = zf.namelist()[0]
         return zf.read(name).decode("utf-8-sig")
