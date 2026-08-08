@@ -7,7 +7,6 @@
 #
 # 必要なもの:
 #   QUERIA_TOKEN  公開先アカウントのトークン
-#   gh            公開後に dataset-catalog の再ビルドを起動する
 #
 # uv.lock は CI と同じく queria を最新に上げてから同期する。差分が出たらコミットする。
 set -euo pipefail
@@ -19,9 +18,5 @@ cd "$(dirname "$0")/.."
 uv lock --upgrade-package queria
 uv sync
 bash scripts/build.sh
-
-gh api repos/queria-io/dataset-catalog/dispatches \
-    -f event_type=dataset-updated \
-    -f "client_payload[dataset]=mhlw"
 
 echo "published. uv.lock に差分があればコミットすること"
