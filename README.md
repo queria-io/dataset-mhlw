@@ -150,9 +150,8 @@ CC BY 4.0 互換）で提供される。いずれも出典表示のうえ商用�
 QUERIA_TOKEN=... bash scripts/sync-local.sh
 ```
 
-このスクリプトは、CI の Sync と同じく queria を最新に上げてからビルド・公開し、
-公開後に dataset-catalog の再ビルドを起動する。ビルドだけを回す場合は queria 経由で
-実行する（dbt を直接実行しない）。
+このスクリプトは、CI の Sync と同じく queria を最新に上げてからビルド・公開する。
+ビルドだけを回す場合は queria 経由で実行する（dbt を直接実行しない）。
 
 ```bash
 uv sync
