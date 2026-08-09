@@ -143,29 +143,24 @@ CC BY 4.0 互換）で提供される。いずれも出典表示のうえ商用�
 このデータセットは日本国内から実行する必要がある。`josei.py` の取得元（女性の活躍推進
 企業データベース）が日本国外からのアクセスを 403 で弾くためで、前段の AWS ロード
 バランサが落とすのでヘッダーや Cookie では通らない。GitHub ホストランナーは US に
-あり、この 1 ファイルだけ取得できない。
-
-そのため Sync は国内の self-hosted ランナーで回す。Actions の画面から手動で起動する
-（`workflow_dispatch`）。ランナーが動いていない間は流せないので、自動トリガーは
-持たせていない。
-
-ランナーを使わず手元から公開することもできる。
+あり、この 1 ファイルだけ取得できない。そのため Sync は CI で自動実行せず、日本国内
+から次のスクリプトで公開する。
 
 ```bash
 QUERIA_TOKEN=... bash scripts/sync-local.sh
 ```
 
-このスクリプトは、CI の Sync と同じく queria を最新に上げてからビルド・公開する。
-ビルドだけを回す場合は queria 経由で実行する（dbt を直接実行しない）。
+このスクリプトは、CI の Sync と同じく queria を最新に上げてからビルド・公開し、
+公開後に dataset-catalog の再ビルドを起動する。ビルドだけを回す場合は queria 経由で
+実行する（dbt を直接実行しない）。
 
 ```bash
 uv sync
 bash scripts/build.sh
 ```
 
-配信元の地域制限が解除されたら、`.github/workflows/sync.yml` の `runs-on` を外して
-`push` / `schedule` トリガーを戻し、GitHub ホストランナーに返す。月次の Checkpoint は
-取得元に触れないので CI のままでよい。
+配信元の地域制限が解除されたら、`.github/workflows/sync.yml` の `push` / `schedule`
+トリガーを戻して CI に返す。月次の Checkpoint は取得元に触れないので CI のままでよい。
 
 パイプラインは `main.py` が担う:
 

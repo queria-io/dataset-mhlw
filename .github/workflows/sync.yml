@@ -1,9 +1,8 @@
 name: Sync
 
 # josei の取得元が日本国外からのアクセスを 403 で弾くため、GitHub ホストランナー（US）
-# ではビルドが通らない。国内の self-hosted ランナーで回す（README「ビルド」）。
-# ランナーが動いていない間は流せないので、自動トリガーは持たせず手動実行だけ残す。
-# 地域制限が解除されたら runs-on を外し、push / schedule を戻す。
+# ではビルドが通らない。公開は日本国内から scripts/sync-local.sh で行う（README「ビルド」）。
+# 自動トリガーは持たせず、手動実行だけ残す。地域制限が解除されたら push / schedule を戻す。
 on:
   workflow_dispatch:
 
@@ -16,5 +15,4 @@ jobs:
     uses: queria-io/dataset-shared/.github/workflows/sync.yml@main
     with:
       dataset_name: mhlw
-      runs-on: self-hosted
     secrets: inherit
