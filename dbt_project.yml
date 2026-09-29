@@ -38,3 +38,10 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    jisatsu:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table

@@ -8,7 +8,8 @@ description: |-
   （shougai）を収録する。いずれも所在地・緯度経度・法人番号・サービス種類・定員などを持つ。
   あわせて NDB オープンデータの特定健診 検査値の都道府県別・性年齢階級別分布（ndb）と、
   女性の活躍推進企業データベースに企業が公表した女性活躍・両立支援の指標
-  （管理職女性割合・男女賃金差異・育児休業取得率など, josei_katsuyaku）を収録する。
+  （管理職女性割合・男女賃金差異・育児休業取得率など, josei_katsuyaku）と、
+  地域における自殺の基礎資料の市区町村別・年別の自殺者数（jisatsu）を収録する。
 keywords:
   - 介護
   - 障害福祉
@@ -22,6 +23,7 @@ keywords:
   - 女性活躍
   - 両立支援
   - ESG
+  - 自殺統計
   - 厚生労働省
 homepage: https://github.com/queria-io/dataset-mhlw
 language: ja
@@ -34,6 +36,8 @@ sources:
     path: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
   - title: 女性の活躍推進企業データベース オープンデータ
     path: https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/
+  - title: 地域における自殺の基礎資料
+    path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
 
 contributors:
   - title: 厚生労働省
@@ -47,7 +51,8 @@ cover: 🏥
 ai_context:
   instructions: |
     介護・障害福祉の事業所を地域ごとに数える、健診の検査値の分布を都道府県で比べる、
-    企業の女性活躍指標を見る、といった用途に使う。4つのスキーマは出どころも粒度も別物。
+    企業の女性活躍指標を見る、市区町村別の自殺者数を見る、といった用途に使う。
+    5つのスキーマは出どころも粒度も別物。
     kaigo.establishment（22万3162件）と shougai.establishment（20万9452件）は
     「事業所 × サービス種類」で1行。同じ事業所が複数のサービスを提供すると複数行になるので、
     事業所数を数えるときは establishment_number で重複を除く。
@@ -60,6 +65,10 @@ ai_context:
     先頭区分の代表値だけを収録している。
     法人番号（corporate_number）で houjin_bangou / gbizinfo と結合できる。
     介護・障害福祉の事業所は市区町村コードを持つので lg_code / address_br と結合できる。
+    jisatsu.suicide_municipality は 年 × 集計地（住居地／発見地）× 市区町村 × 性 × 属性区分 × 区分
+    の long 形式。政令指定都市と東京都特別区は市の行と区の行の両方を持つので、合計を出すときは
+    area_level = '区' を除く。市の行は区不詳を含まないので、市の総数には同じ市の区不詳を足す。秘匿された欄は NULL で、0 ではない。自殺死亡率は持たないので、
+    率が要るときは人口の表と city_code で結合する。
   synonyms: [介護事業所, 障害福祉サービス, 特定健診, NDB, 女性活躍推進, えるぼし]
   examples:
     - 市区町村別の介護事業所の数を出したい
@@ -75,3 +84,5 @@ schemas:
     title: 特定健診（NDB）
   - name: josei_katsuyaku
     title: 女性活躍推進企業
+  - name: jisatsu
+    title: 自殺統計（市区町村別）
