@@ -1,0 +1,7 @@
+schema: jisatsu
+name: raw_suicide_municipality
+description: |-
+  地域における自殺の基礎資料 市区町村別・年計の生データ。
+  年計「自殺日集計」の A7 表（住居地）・A8 表（発見地）を main.py が long 形式に統合した
+  NDJSON を読み込む。
+published: false
