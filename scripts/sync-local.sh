@@ -15,6 +15,9 @@ cd "$(dirname "$0")/.."
 
 : "${QUERIA_TOKEN:?QUERIA_TOKEN が設定されていない}"
 
+# scripts/build.sh は submodule の shared/ を呼ぶ。clone 直後は空なので取得する
+git submodule update --init
+
 uv lock --upgrade-package queria
 uv sync
 bash scripts/build.sh
