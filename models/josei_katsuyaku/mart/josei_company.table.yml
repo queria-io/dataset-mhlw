@@ -37,6 +37,7 @@ fields:
   - name: corporate_number
     title: 法人番号
     description: 13 桁の法人番号。houjin_bangou / gbizinfo と結合可。未公表は NULL（一部に重複あり）
+    semantic: { role: entity, name: corporate_number }
   - name: company_name
     title: 企業名
   - name: industry
