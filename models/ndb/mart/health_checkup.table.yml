@@ -46,6 +46,7 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 全国地方公共団体コードの都道府県 2 桁。都道府県判別不可は NULL。lg_code / census と結合可
+    semantic: { role: entity, name: prefecture }
   - name: prefecture
     title: 都道府県名
     description: 施設所在地の都道府県名。判別不可は「都道府県判別不可」

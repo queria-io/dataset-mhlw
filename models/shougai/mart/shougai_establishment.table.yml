@@ -41,12 +41,15 @@ fields:
   - name: local_gov_code
     title: 地方公共団体コード
     description: 全国地方公共団体コード（5 桁・チェックデジットなし）
+    semantic: { role: entity, name: city }
   - name: prefecture_code
     title: 都道府県コード
     description: 地方公共団体コードの上 2 桁
+    semantic: { role: entity, name: prefecture }
   - name: city_code
     title: 市区町村コード
     description: 5 桁の全国地方公共団体コード。lg_code / address_br と結合可
+    semantic: { role: entity, name: city }
   - name: designating_authority
     title: 指定機関名
     description: 事業所を指定した自治体（都道府県・政令市・中核市など）の名称
@@ -73,6 +76,7 @@ fields:
   - name: corporate_number
     title: 法人番号
     description: 13 桁の法人番号。houjin_bangou と結合可。未登録は NULL
+    semantic: { role: entity, name: corporate_number }
   - name: corporate_name
     title: 法人の名称
   - name: corporate_name_kana

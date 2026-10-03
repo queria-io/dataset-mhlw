@@ -42,12 +42,15 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 全国地方公共団体コードの上 2 桁。area_level が都道府県不詳の行は NULL
+    semantic: { role: entity, name: prefecture }
   - name: local_gov_code
     title: 地方公共団体コード
     description: 全国地方公共団体コード（6 桁 = 5 桁自治体コード + チェックデジット）。area_level が市区町村・区の行だけが持つ
+    semantic: { role: entity, name: city }
   - name: city_code
     title: 市区町村コード
     description: 地方公共団体コードの上 5 桁。lg_code / address_br と結合できる
+    semantic: { role: entity, name: city }
   - name: municipality
     title: 市区町村名
     description: 都道府県名を付けた市区町村名（例 北海道函館市）。政令指定都市の区は市名から（例 札幌市中央区）、東京都の特別区は都名から（例 東京都千代田区）。特別区全体の行は東京都特別区
