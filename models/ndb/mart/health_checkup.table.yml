@@ -31,6 +31,7 @@ keywords:
   - 医療
   - 厚生労働省
 published: true
+themes: [social_security_health]
 sources:
   - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html
 fields:

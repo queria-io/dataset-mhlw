@@ -27,6 +27,7 @@ keywords:
   - 厚生労働省
 homepage: https://github.com/queria-io/dataset-mhlw
 language: ja
+themes: [social_security_health, labour]
 
 licenses:
   - JP-PDL-1.0

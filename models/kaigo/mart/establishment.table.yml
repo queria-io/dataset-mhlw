@@ -21,6 +21,7 @@ keywords:
   - GIS
   - 法人番号
 published: true
+themes: [social_security_health]
 sources:
   - path: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
 fields:

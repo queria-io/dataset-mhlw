@@ -31,6 +31,7 @@ keywords:
   - 人的資本
   - 法人番号
 published: true
+themes: [labour]
 sources:
   - path: https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/
 fields:

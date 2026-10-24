@@ -30,6 +30,7 @@ keywords:
   - 市区町村
   - 厚生労働省
 published: true
+themes: [social_security_health]
 sources:
   - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
 fields:
