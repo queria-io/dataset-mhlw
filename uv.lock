@@ -763,16 +763,16 @@ wheels = [
 
 [[package]]
 name = "queria"
-version = "0.25.1"
+version = "0.39.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "duckdb" },
     { name = "jsonschema" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/bd/c7/5401e07f1ea0ea4da1a49b72c262b90ba1c4f390ea61118d1ed3a22419a9/queria-0.25.1.tar.gz", hash = "sha256:7647e403baae7879244848c6bb2af20efa5d56b1bb2e787c2aea048ba812ebf6", size = 350577, upload-time = "2026-09-21T01:06:36.162Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/ac/95/161ab0de60c40140f292b24aedbdf201f4a0c5b48ab48ba87486ea5b06d1/queria-0.39.2.tar.gz", hash = "sha256:dff0ff387f888b5fb7f5bd06548c5425b7027dd7cafb7bd705aa862630912ce2", size = 395346, upload-time = "2026-10-24T23:41:08.999Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/85/64/8176442b9b62c61dd38043f5fa2d975b3e0282905072ea0779e33202a253/queria-0.25.1-py3-none-any.whl", hash = "sha256:cfe03e555eab9dc8ec838cbaf22789e6a6d37176e6a4da1151cc2d2cd629667a", size = 138151, upload-time = "2026-09-21T01:06:34.644Z" },
+    { url = "https://files.pythonhosted.org/packages/ec/d7/60190ac4ed09e15fc0f4632ed89dcf9a98b70ef3a0cf649e0febe6112ab2/queria-0.39.2-py3-none-any.whl", hash = "sha256:e5fa1db930a0d0e214d65903792f47a259f5b8fe8df99277f80b9b443d2e59cf", size = 168440, upload-time = "2026-10-24T23:41:07.408Z" },
 ]
 
 [[package]]
