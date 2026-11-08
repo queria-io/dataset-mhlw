@@ -1,0 +1,43 @@
+schema: dpc
+name: mdc_patients
+title: DPC 病院別・MDC 別の退院患者数
+description: |-
+  DPC 退院患者調査に参加した病院ごとの退院患者数を、MDC（主要診断群 18 区分）と手術の有無で分けて持ちます（2016〜2023 年度）。
+
+  - 症例数が 10 未満の組み合わせと 0 件の組み合わせは公表されていないため行がありません
+  - 病院の所在地や病床数は hospital と fiscal_year・notification_number・serial_number で結合してください。serial_number は NULL を含むので、`is not distinct from` で比べます
+keywords:
+  - DPC
+  - MDC
+  - 主要診断群
+  - 退院患者数
+  - 手術
+  - 病院
+  - 診療実績
+  - 厚生労働省
+published: true
+themes: [social_security_health]
+sources:
+  - path: https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
+fields:
+  - name: fiscal_year
+    title: 年度
+    description: 調査対象の年度（西暦）。4 月から翌年 3 月までに退院した患者を集計
+  - name: notification_number
+    title: 告示番号
+    description: 当該年度の告示番号（5 桁）。hospital と結合するキー
+  - name: serial_number
+    title: 通番
+    description: 前年度の告示番号。当該年度から調査に参加した病院と、合併後の病院は NULL
+  - name: mdc
+    title: MDC コード
+    description: 主要診断群（MDC）の 2 桁のコード（01〜18）
+  - name: mdc_name
+    title: MDC 名称
+    description: 主要診断群の名称（例 05 循環器系疾患）
+  - name: has_surgery
+    title: 手術の有無
+    description: 手術があった症例なら true。輸血関連の手技だけの症例は手術なしとして数える
+  - name: patients
+    title: 退院患者数
+    description: 当該年度に退院または転棟した患者の数（件）。10 以上の値だけを持つ

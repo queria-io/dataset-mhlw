@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: raw_hospital
+    description: |
+      DPC 退院患者調査 施設概要表の生データ。年度ごとの施設概要表を main.py が
+      統合した NDJSON を読み込む。
+  - name: raw_mdc_patients
+    description: |
+      DPC 退院患者調査 MDC 別医療機関別件数の生データ。年度ごとの表を main.py が
+      long 形式に展開した NDJSON を読み込む。

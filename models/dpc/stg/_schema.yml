@@ -1,0 +1,5 @@
+version: 2
+
+models:
+  - name: stg_hospital
+  - name: stg_mdc_patients

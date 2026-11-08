@@ -45,3 +45,10 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    dpc:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
