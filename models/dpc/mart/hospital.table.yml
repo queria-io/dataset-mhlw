@@ -1,0 +1,81 @@
+schema: dpc
+name: hospital
+title: DPC 調査参加病院の施設概要
+description: |-
+  DPC 退院患者調査に参加した病院の年度別の施設概要です。所在市町村、施設類型、病床数、DPC 算定病床の入院基本料を持ちます（2016〜2023 年度）。
+
+  - DPC 準備病院と出来高算定病院の告示番号は年度ごとに振り直されます。年度をまたいで病院を追うときは serial_number（前年度の告示番号）でつないでください
+  - 年度の途中で合併した病院は合併前と合併後の 2 行を持ち、告示番号が同じになることがあります。1 年度の中では notification_number と serial_number の組で一意です
+keywords:
+  - DPC
+  - 病院
+  - 病床数
+  - 急性期医療
+  - 退院患者調査
+  - 中医協
+  - 厚生労働省
+published: true
+themes: [social_security_health]
+sources:
+  - path: https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
+fields:
+  - name: fiscal_year
+    title: 年度
+    description: 調査対象の年度（西暦）。4 月から翌年 3 月までに退院した患者を集計
+  - name: notification_number
+    title: 告示番号
+    description: 当該年度の告示番号（5 桁）。DPC 準備病院は 9、出来高算定病院は 0 で始まる調査参加年度ごとの施設コード順
+  - name: serial_number
+    title: 通番
+    description: 前年度の告示番号。当該年度から調査に参加した病院と、合併後の病院は NULL
+  - name: hospital_name
+    title: 施設名
+    description: 病院の名称
+  - name: facility_group
+    title: 施設類型
+    description: 大学病院本院群／DPC特定病院群／DPC標準病院群／DPC準備病院／出来高算定病院。2017 年度までは DPC対象病院Ⅰ群・Ⅱ群・Ⅲ群
+  - name: hospital_category
+    title: 病院類型
+    description: DPC に参加した年度と参加の種別（例 平成15年度DPC参加病院、令和5年度出来高算定病院）
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 市町村番号の上 2 桁
+    semantic: { role: entity, name: prefecture }
+  - name: city_code
+    title: 市区町村コード
+    description: 所在地の市区町村コード（5 桁）。lg_code / address_br と結合できる
+    semantic: { role: entity, name: city }
+  - name: local_gov_code
+    title: 地方公共団体コード
+    description: 市区町村コードに検査数字を付けた全国地方公共団体コード（6 桁）
+    semantic: { role: entity, name: city }
+  - name: dpc_beds
+    title: DPC 算定病床数
+    description: DPC 算定病床の数
+  - name: dpc_basic_fee
+    title: DPC 算定病床の入院基本料
+    description: DPC 算定病床で届け出ている入院基本料（例 急性期一般1、特定機能7対1）。DPC 算定病床が無い病院は NULL
+  - name: dpc_bed_ratio
+    title: DPC 算定病床割合
+    description: 病床総数に占める DPC 算定病床の割合（0〜1）
+  - name: rehabilitation_beds
+    title: 回復期リハビリテーション病棟入院料等病床数
+    description: 回復期リハビリテーション病棟入院料などを算定する病床の数
+  - name: community_care_beds
+    title: 地域包括ケア病棟入院料病床数
+    description: 地域包括ケア病棟入院料を算定する病床の数
+  - name: psychiatric_beds
+    title: 精神病床数
+    description: 精神病床の数
+  - name: long_term_care_beds
+    title: 療養病床数
+    description: 療養病床の数
+  - name: tuberculosis_beds
+    title: 結核病床数
+    description: 結核病床の数
+  - name: total_beds
+    title: 病床総数
+    description: 医療保険の対象となる病床の総数
+  - name: months_submitted
+    title: 提出月数
+    description: 当該年度にデータを提出した月の数（最大 12）

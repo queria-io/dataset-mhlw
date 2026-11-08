@@ -2,9 +2,9 @@ spec_version: "0.1"
 name: mhlw
 title: 厚生労働省
 description: |-
-  厚生労働省が公開する、全国の介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数です。事業所は市区町村コード、企業は法人番号で他のデータセットと結合できます。
+  厚生労働省が公開する、全国の介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数です。事業所は市区町村コード、企業は法人番号で他のデータセットと結合できます。
 
-  出典：厚生労働省（介護サービス情報公表システム、障害福祉サービス等情報公表システム、NDB オープンデータ、女性の活躍推進企業データベース、地域における自殺の基礎資料）を加工して作成。
+  出典：厚生労働省（介護サービス情報公表システム、障害福祉サービス等情報公表システム、NDB オープンデータ、女性の活躍推進企業データベース、地域における自殺の基礎資料、DPC 導入の影響評価に係る調査「退院患者調査」）を加工して作成。
 keywords:
   - 介護
   - 障害福祉
@@ -19,6 +19,8 @@ keywords:
   - 両立支援
   - ESG
   - 自殺統計
+  - DPC
+  - 病院
   - 厚生労働省
 homepage: https://github.com/queria-io/dataset-mhlw
 language: ja
@@ -34,6 +36,8 @@ sources:
     path: https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/
   - title: 地域における自殺の基礎資料
     path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
+  - title: DPC 導入の影響評価に係る調査「退院患者調査」の結果報告
+    path: https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
 
 contributors:
   - title: 厚生労働省
@@ -48,7 +52,7 @@ ai_context:
   instructions: |
     介護・障害福祉の事業所を地域ごとに数える、健診の検査値の分布を都道府県で比べる、
     企業の女性活躍指標を見る、市区町村別の自殺者数を見る、といった用途に使う。
-    5つのスキーマは出どころも粒度も別物。
+    6つのスキーマは出どころも粒度も別物。
     kaigo.establishment（22万3162件）と shougai.establishment（20万9452件）は
     「事業所 × サービス種類」で1行。同じ事業所が複数のサービスを提供すると複数行になるので、
     事業所数を数えるときは establishment_number で重複を除く。
@@ -65,6 +69,8 @@ ai_context:
     の long 形式。政令指定都市と東京都特別区は市の行と区の行の両方を持つので、合計を出すときは
     area_level = '区' を除く。市の行は区不詳を含まないので、市の総数には同じ市の区不詳を足す。秘匿された欄は NULL で、0 ではない。自殺死亡率は持たないので、
     率が要るときは人口の表と city_code で結合する。
+    dpc は病院 × 年度の施設概要（hospital）と、病院 × MDC × 手術の有無の退院患者数（mdc_patients）。
+    10 症例未満の組み合わせは行が無い。病院は city_code で lg_code と結合できる。
   synonyms: [介護事業所, 障害福祉サービス, 特定健診, NDB, 女性活躍推進, えるぼし]
   examples:
     - 市区町村別の介護事業所の数を出したい
@@ -82,3 +88,5 @@ schemas:
     title: 女性活躍推進企業
   - name: jisatsu
     title: 自殺統計（市区町村別）
+  - name: dpc
+    title: DPC 退院患者調査

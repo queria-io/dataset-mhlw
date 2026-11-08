@@ -1,0 +1,63 @@
+version: 2
+
+models:
+  - name: hospital
+    description: |
+      DPC 導入の影響評価に係る調査「退院患者調査」に参加した病院の年度別の施設概要。
+      平成 28 年度（2016 年度）から令和 5 年度（2023 年度）。
+      1 行 = 年度 × 病院。DPC 対象病院のほか、DPC 準備病院と、データを提出している
+      出来高算定病院を含む。
+      告示番号は年度ごとに振られる。DPC 対象病院（施設類型が大学病院本院群・DPC 特定病院群・
+      DPC 標準病院群、平成 29 年度まではⅠ〜Ⅲ群）の告示番号は年度をまたいで同じ病院を指すが、
+      DPC 準備病院と出来高算定病院の番号は調査参加年度ごとの施設コード順で、年度が変わると
+      別の病院を指しうる。年度をまたいで病院を追うときは serial_number（前年度の告示番号）で
+      つなぐ。
+      年度の途中で合併した病院は、合併前と合併後で 2 行を持ち、告示番号が同じになることがある。
+      1 年度の中の病院は notification_number と serial_number の組で一意になる。serial_number は
+      NULL を含むので、結合では is not distinct from で比べる。
+      出典: DPC 導入の影響評価に係る調査「退院患者調査」の結果報告（厚生労働省）のデータを加工して作成。
+      https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
+    access: public
+    columns:
+      - name: fiscal_year
+      - name: notification_number
+      - name: serial_number
+      - name: hospital_name
+      - name: facility_group
+      - name: hospital_category
+      - name: prefecture_code
+      - name: city_code
+      - name: local_gov_code
+      - name: dpc_beds
+      - name: dpc_basic_fee
+      - name: dpc_bed_ratio
+      - name: rehabilitation_beds
+      - name: community_care_beds
+      - name: psychiatric_beds
+      - name: long_term_care_beds
+      - name: tuberculosis_beds
+      - name: total_beds
+      - name: months_submitted
+  - name: mdc_patients
+    description: |
+      DPC 退院患者調査の病院別・MDC（主要診断群）別・手術の有無別の退院患者数。
+      平成 28 年度（2016 年度）から令和 5 年度（2023 年度）。
+      1 行 = 年度 × 病院 × MDC × 手術の有無。
+      症例数が 10 未満の組み合わせと 0 件の組み合わせは公表されていないため行が無い。
+      病院の属性は hospital と fiscal_year・notification_number・serial_number で結合する。
+      serial_number は NULL を含むので is not distinct from で比べる。告示番号だけで結合すると、
+      年度の途中で合併した病院の行が重複する。
+      MDC 別集計に使う診断群分類は年度ごとに改定される。
+      在院日数 1 日以下・24 時間以内の死亡・移植手術ありなど、集計条件に定める症例は
+      分析対象から除いている。
+      出典: DPC 導入の影響評価に係る調査「退院患者調査」の結果報告（厚生労働省）のデータを加工して作成。
+      https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
+    access: public
+    columns:
+      - name: fiscal_year
+      - name: notification_number
+      - name: serial_number
+      - name: mdc
+      - name: mdc_name
+      - name: has_surgery
+      - name: patients
