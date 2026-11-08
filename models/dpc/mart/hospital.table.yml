@@ -54,7 +54,7 @@ fields:
     description: DPC 算定病床の数
   - name: dpc_basic_fee
     title: DPC 算定病床の入院基本料
-    description: DPC 算定病床で届け出ている入院基本料（例 急性期一般1、特定機能7対1）
+    description: DPC 算定病床で届け出ている入院基本料（例 急性期一般1、特定機能7対1）。DPC 算定病床が無い病院は NULL
   - name: dpc_bed_ratio
     title: DPC 算定病床割合
     description: 病床総数に占める DPC 算定病床の割合（0〜1）

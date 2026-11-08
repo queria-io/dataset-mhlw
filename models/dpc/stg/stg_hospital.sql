@@ -19,7 +19,7 @@ select
     city_code,
     {{ local_government_code('city_code') }} as local_gov_code,
     try_cast(dpc_beds as INTEGER) as dpc_beds,
-    nullif(dpc_basic_fee, '') as dpc_basic_fee,
+    nullif(nullif(dpc_basic_fee, ''), '-') as dpc_basic_fee,
     try_cast(dpc_bed_ratio as DOUBLE) as dpc_bed_ratio,
     try_cast(rehabilitation_beds as INTEGER) as rehabilitation_beds,
     try_cast(community_care_beds as INTEGER) as community_care_beds,
