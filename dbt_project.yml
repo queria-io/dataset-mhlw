@@ -52,3 +52,17 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    kouseikyoku:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table
+    iryo_joho_net:
+      raw:
+        +materialized: table
+      stg:
+        +materialized: view
+      mart:
+        +materialized: table

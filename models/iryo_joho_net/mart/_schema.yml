@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: iryo_joho_net_facility
+    description: |
+      医療情報ネット（ナビイ）に載っている全国の病院・診療所・歯科診療所・助産所・薬局。
+      1 行 = 1 施設。名称・所在地・緯度経度・ホームページ・病床数を持つ。
+      id は医療情報ネットが振る番号で、保険医療機関コードではない。
+      緯度経度は欠測（0.0）と日本の範囲外の値を NULL にしている。
+      出典: 医療情報ネット オープンデータ（厚生労働省）のデータを加工して作成。
+      https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
+    access: public
+    columns:
+      - name: id
+      - name: facility_type
+      - name: name
+      - name: name_kana
+      - name: short_name
+      - name: short_name_kana
+      - name: name_en
+      - name: prefecture_code
+      - name: city_code
+      - name: local_gov_code
+      - name: address
+      - name: latitude
+      - name: longitude
+      - name: geometry
+      - name: url
+      - name: general_beds
+      - name: long_term_care_beds
+      - name: long_term_care_medical_insurance_beds
+      - name: long_term_care_ltci_beds
+      - name: psychiatric_beds
+      - name: tuberculosis_beds
+      - name: infectious_beds
+      - name: total_beds
+      - name: as_of
+  - name: iryo_joho_net_speciality
+    description: |
+      病院・診療所・歯科診療所が医療情報ネットで公表している診療科。1 行 = 施設 × 診療科。
+      施設の属性は iryo_joho_net_facility と id で結合する。
+      出典: 医療情報ネット オープンデータ（厚生労働省）のデータを加工して作成。
+      https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
+    access: public
+    columns:
+      - name: id
+      - name: speciality_code
+      - name: speciality_name
+      - name: as_of

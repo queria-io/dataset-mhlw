@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: raw_iryo_joho_net_facility
+    description: |
+      医療情報ネット オープンデータの施設票の生データ。5 種類の施設票の共通の列を main.py が
+      統合した NDJSON を読み込む。
+  - name: raw_iryo_joho_net_speciality
+    description: |
+      医療情報ネット オープンデータの診療科・診療時間票から、施設 × 診療科を main.py が
+      取り出した NDJSON を読み込む。

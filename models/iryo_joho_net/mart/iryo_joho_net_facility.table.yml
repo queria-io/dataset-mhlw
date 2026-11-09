@@ -1,0 +1,88 @@
+schema: iryo_joho_net
+name: facility
+title: 医療機関・薬局の所在地（医療情報ネット）
+description: |-
+  医療情報ネット（ナビイ）に載っている全国の病院・診療所・歯科診療所・助産所・薬局の名称・所在地・緯度経度・ホームページ・病床数です。1 行が 1 施設で、半年ごと（6 月 1 日・12 月 1 日時点）に更新されます。
+
+  - id は医療情報ネットが振る番号で、保険医療機関コードではありません。医療機関コードは kouseikyoku.insured_institution にあります
+  - 病床数は病院と診療所だけが持ちます
+  - 緯度経度の欠測（元データの 0.0）と日本の範囲外の値は NULL です
+keywords:
+  - 医療機関
+  - 病院
+  - 診療所
+  - 歯科
+  - 助産所
+  - 薬局
+  - 病床数
+  - GIS
+  - 医療情報ネット
+  - ナビイ
+  - 厚生労働省
+published: true
+themes: [social_security_health]
+sources:
+  - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
+fields:
+  - name: id
+    title: ID
+    description: 医療情報ネットが施設に振る番号。speciality と結合するキー。保険医療機関コードではない
+  - name: facility_type
+    title: 施設の種類
+    description: 病院／診療所／歯科診療所／助産所／薬局
+  - name: name
+    title: 正式名称
+  - name: name_kana
+    title: 正式名称（フリガナ）
+  - name: short_name
+    title: 略称
+  - name: short_name_kana
+    title: 略称（フリガナ）
+  - name: name_en
+    title: 英語表記
+  - name: prefecture_code
+    title: 都道府県コード
+    semantic: { role: entity, name: prefecture }
+  - name: city_code
+    title: 市区町村コード
+    description: 所在地の市区町村コード（5 桁）。lg_code / address_br と結合できる
+    semantic: { role: entity, name: city }
+  - name: local_gov_code
+    title: 地方公共団体コード
+    description: 市区町村コードに検査数字を付けた全国地方公共団体コード（6 桁）
+    semantic: { role: entity, name: city }
+  - name: address
+    title: 所在地
+  - name: latitude
+    title: 緯度
+    description: 十進度。欠測（元データの 0.0）と日本の範囲外の値は NULL
+  - name: longitude
+    title: 経度
+    description: 十進度。欠測（元データの 0.0）と日本の範囲外の値は NULL
+  - name: geometry
+    title: ジオメトリ
+    description: 緯度経度が有効な施設の位置（POINT）
+  - name: url
+    title: ホームページ
+  - name: general_beds
+    title: 一般病床数
+  - name: long_term_care_beds
+    title: 療養病床数
+  - name: long_term_care_medical_insurance_beds
+    title: 療養病床のうち医療保険適用
+  - name: long_term_care_ltci_beds
+    title: 療養病床のうち介護保険適用
+  - name: psychiatric_beds
+    title: 精神病床数
+    description: 病院のみ
+  - name: tuberculosis_beds
+    title: 結核病床数
+    description: 病院のみ
+  - name: infectious_beds
+    title: 感染症病床数
+    description: 病院のみ
+  - name: total_beds
+    title: 合計病床数
+  - name: as_of
+    title: 時点
+    description: オープンデータの基準日（6 月 1 日または 12 月 1 日）

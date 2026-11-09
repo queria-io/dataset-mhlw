@@ -1,0 +1,121 @@
+schema: kouseikyoku
+name: insured_institution
+title: 保険医療機関・保険薬局
+description: |-
+  全国の保険医療機関・保険薬局の医療機関コード・名称・所在地・電話番号・指定年月日・病床数・診療科です。地方厚生局が毎月公開する「コード内容別医療機関一覧表」を 8 局分まとめています。1 行が 1 医療機関コードです。
+
+  - 医療機関コードは 10 桁（都道府県 2 桁 + 点数表 1 桁 + 医療機関番号 7 桁）です
+  - 医科と歯科の両方の指定を受けた機関は点数表ごとに 2 行あります。もう一方の番号は annex_institution_number にあります
+  - 開設者と管理者は個人の氏名を含むため収録していません
+  - 局によって一覧の時点が 1 か月ずれることがあります（as_of）
+keywords:
+  - 医療機関コード
+  - 保険医療機関
+  - 保険薬局
+  - 病院
+  - 診療所
+  - 歯科
+  - 薬局
+  - 病床数
+  - 地方厚生局
+  - 厚生労働省
+published: true
+themes: [social_security_health]
+sources:
+  - title: 北海道厚生局 コード内容別医療機関一覧表
+    path: https://kouseikyoku.mhlw.go.jp/hokkaido/gyomu/gyomu/hoken_kikan/code_ichiran.html
+  - title: 東北厚生局 管内保険医療機関・保険薬局の指定状況等一覧
+    path: https://kouseikyoku.mhlw.go.jp/tohoku/gyomu/gyomu/hoken_kikan/itiran.html
+  - title: 関東信越厚生局 保険医療機関・保険薬局の指定等一覧
+    path: https://kouseikyoku.mhlw.go.jp/kantoshinetsu/chousa/shitei.html
+  - title: 東海北陸厚生局 コード内容別医療機関一覧表
+    path: https://kouseikyoku.mhlw.go.jp/tokaihokuriku/newpage_00287.html
+  - title: 近畿厚生局 保険医療機関・保険薬局の指定一覧
+    path: https://kouseikyoku.mhlw.go.jp/kinki/tyousa/shinkishitei.html
+  - title: 中国四国厚生局 保険医療機関等の指定状況等
+    path: https://kouseikyoku.mhlw.go.jp/chugokushikoku/chousaka/iryoukikanshitei.html
+  - title: 四国厚生支局 保険医療機関・保険薬局の管内指定状況等
+    path: https://kouseikyoku.mhlw.go.jp/shikoku/gyomu/gyomu/hoken_kikan/shitei/index.html
+  - title: 九州厚生局 コード内容別医療機関一覧表
+    path: https://kouseikyoku.mhlw.go.jp/kyushu/gyomu/gyomu/hoken_kikan/index_00006.html
+fields:
+  - name: medical_institution_code
+    title: 医療機関コード
+    description: 10 桁の医療機関コード（都道府県 2 桁 + 点数表 1 桁 + 医療機関番号 7 桁）。点数表は 1 が医科、3 が歯科、4 が調剤（薬局）
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 所在地の都道府県コード（2 桁）
+    semantic: { role: entity, name: prefecture }
+  - name: fee_schedule
+    title: 点数表
+    description: 医科／歯科／薬局。一覧表の種類
+  - name: institution_number
+    title: 医療機関番号
+    description: 7 桁の医療機関番号（郡市区 2 桁 + 番号 4 桁 + 検証番号 1 桁）。都道府県の中で一意
+  - name: name
+    title: 名称
+  - name: postal_code
+    title: 郵便番号
+    description: 7 桁の郵便番号。所在地の先頭の「〒」から切り出した値
+    semantic: { role: entity, name: postal_code }
+  - name: address
+    title: 所在地
+    description: 郵便番号を除いた所在地（元データの表記のまま）
+  - name: phone
+    title: 電話番号
+  - name: institution_type
+    title: 種別
+    description: 病院／診療所／薬局。特定機能病院・地域医療支援病院・総合病院は病院
+  - name: categories
+    title: 種別の欄
+    description: 一覧表の種別の欄の値（病院・診療所・薬局・特定機能・地域支援・総合病院・療養病床）。元データの表記のまま
+  - name: status
+    title: 状態
+    description: 現存／休止／辞退
+  - name: designated_on
+    title: 指定年月日
+    description: この医療機関コードで保険医療機関・保険薬局の指定を受けた日
+  - name: designation_reason
+    title: 登録理由
+    description: 新規・組織変更・交代・移転など。局によって略し方が異なる（例 組変、開変）。元データの表記のまま
+  - name: designation_period_start
+    title: 指定期間の始期
+    description: 現在の指定期間（6 年ごとに更新）が始まった日
+  - name: annex_institution_number
+    title: 併設の医療機関番号
+    description: 医科と歯科の両方の指定を受けた機関の、もう一方の点数表の医療機関番号（7 桁）。医科の行なら歯科の番号
+  - name: general_beds
+    title: 一般病床数
+    description: 種類が「一般」の病床の数。病床の無い機関は NULL
+  - name: long_term_care_beds
+    title: 療養病床数
+  - name: psychiatric_beds
+    title: 精神病床数
+  - name: tuberculosis_beds
+    title: 結核病床数
+  - name: infectious_beds
+    title: 感染症病床数
+  - name: beds
+    title: 病床
+    description: 一覧表の病床の欄（種類と数）。「一般（感染）」「介護」など上の列に無い種類もここにある
+  - name: departments
+    title: 診療科
+    description: 診療科の一覧。元データの略称のまま（例 内、小、整外、耳い）
+  - name: full_time_doctors
+    title: 常勤の医師数
+  - name: full_time_dentists
+    title: 常勤の歯科医師数
+  - name: full_time_pharmacists
+    title: 常勤の薬剤師数
+  - name: part_time_doctors
+    title: 非常勤の医師数
+  - name: part_time_dentists
+    title: 非常勤の歯科医師数
+  - name: part_time_pharmacists
+    title: 非常勤の薬剤師数
+  - name: as_of
+    title: 時点
+    description: 一覧表の時点（毎月 1 日現在）
+  - name: bureau
+    title: 地方厚生局
+    description: hokkaido / tohoku / kantoshinetsu / tokaihokuriku / kinki / chugokushikoku / shikoku / kyushu

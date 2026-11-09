@@ -11,7 +11,9 @@
             long 形式の NDJSON へ統合する。
 6. dpc:     DPC 退院患者調査の施設概要表と MDC 別医療機関別件数の Excel を年度ごとに取得し、
             2 本の NDJSON へ統合する。
-7. dbt:     dbt ビルド。
+7. kouseikyoku:   地方厚生局のコード内容別医療機関一覧表（8 局）を取得し、1 機関 1 行の NDJSON へ整形する。
+8. iryo_joho_net: 医療情報ネットの施設票と診療科・診療時間票を取得し、2 本の NDJSON へ整形する。
+9. dbt:     dbt ビルド。
 """
 
 import logging
@@ -20,9 +22,11 @@ from pathlib import Path
 from dbt.cli.main import dbtRunner
 
 import dpc
+import iryo_joho_net
 import jisatsu
 import josei
 import kaigo
+import kouseikyoku
 import ndb
 import shougai
 
@@ -37,6 +41,9 @@ JOSEI_NDJSON_PATH = WORK_DIR / "josei_katsuyaku_company.ndjson"
 JISATSU_NDJSON_PATH = WORK_DIR / "jisatsu_municipality.ndjson"
 DPC_HOSPITAL_NDJSON_PATH = WORK_DIR / "dpc_hospital.ndjson"
 DPC_MDC_NDJSON_PATH = WORK_DIR / "dpc_mdc_patients.ndjson"
+KOUSEIKYOKU_NDJSON_PATH = WORK_DIR / "kouseikyoku_insured_institution.ndjson"
+IRYO_JOHO_NET_FACILITY_NDJSON_PATH = WORK_DIR / "iryo_joho_net_facility.ndjson"
+IRYO_JOHO_NET_SPECIALITY_NDJSON_PATH = WORK_DIR / "iryo_joho_net_speciality.ndjson"
 
 
 def dbt_build() -> None:
@@ -50,31 +57,41 @@ def dbt_build() -> None:
 def main() -> None:
     WORK_DIR.mkdir(exist_ok=True)
 
-    logger.info("1/7: kaigo (介護サービス事業所)")
+    logger.info("1/9: kaigo (介護サービス事業所)")
     rows = kaigo.download_and_flatten(KAIGO_NDJSON_PATH)
     logger.info(f"  kaigo_establishment.ndjson: {rows} rows")
 
-    logger.info("2/7: shougai (障害福祉サービス等事業所)")
+    logger.info("2/9: shougai (障害福祉サービス等事業所)")
     rows = shougai.download_and_flatten(SHOUGAI_NDJSON_PATH)
     logger.info(f"  shougai_establishment.ndjson: {rows} rows")
 
-    logger.info("3/7: ndb (特定健診 検査値分布)")
+    logger.info("3/9: ndb (特定健診 検査値分布)")
     rows = ndb.download_and_flatten(NDB_NDJSON_PATH)
     logger.info(f"  ndb_health_checkup.ndjson: {rows} rows")
 
-    logger.info("4/7: josei (女性活躍推進企業)")
+    logger.info("4/9: josei (女性活躍推進企業)")
     rows = josei.download_and_flatten(JOSEI_NDJSON_PATH)
     logger.info(f"  josei_katsuyaku_company.ndjson: {rows} rows")
 
-    logger.info("5/7: jisatsu (地域における自殺の基礎資料)")
+    logger.info("5/9: jisatsu (地域における自殺の基礎資料)")
     rows = jisatsu.download_and_flatten(JISATSU_NDJSON_PATH)
     logger.info(f"  jisatsu_municipality.ndjson: {rows} rows")
 
-    logger.info("6/7: dpc (DPC 退院患者調査)")
+    logger.info("6/9: dpc (DPC 退院患者調査)")
     hospitals, mdc = dpc.download_and_flatten(DPC_HOSPITAL_NDJSON_PATH, DPC_MDC_NDJSON_PATH)
     logger.info(f"  dpc_hospital.ndjson: {hospitals} rows, dpc_mdc_patients.ndjson: {mdc} rows")
 
-    logger.info("7/7: dbt build")
+    logger.info("7/9: kouseikyoku (コード内容別医療機関一覧表)")
+    rows = kouseikyoku.download_and_flatten(KOUSEIKYOKU_NDJSON_PATH)
+    logger.info(f"  kouseikyoku_insured_institution.ndjson: {rows} rows")
+
+    logger.info("8/9: iryo_joho_net (医療情報ネット)")
+    facilities, specialities = iryo_joho_net.download_and_flatten(
+        IRYO_JOHO_NET_FACILITY_NDJSON_PATH, IRYO_JOHO_NET_SPECIALITY_NDJSON_PATH
+    )
+    logger.info(f"  iryo_joho_net_facility.ndjson: {facilities} rows, iryo_joho_net_speciality.ndjson: {specialities} rows")
+
+    logger.info("9/9: dbt build")
     dbt_build()
 
 

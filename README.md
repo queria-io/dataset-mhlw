@@ -1,11 +1,13 @@
 # 厚生労働省
 
-厚生労働省が公開するオープンデータのうち、全国の介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数を、SQL で検索・集計できるテーブルにしたデータセットです。事業所は市区町村コードで lg_code・address_br と、企業は法人番号で houjin_bangou・gbizinfo と結合できます。
+厚生労働省が公開するオープンデータのうち、全国の保険医療機関・保険薬局（医療機関コード）、医療機関・薬局の所在地と診療科、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数を、SQL で検索・集計できるテーブルにしたデータセットです。事業所は市区町村コードで lg_code・address_br と、企業は法人番号で houjin_bangou・gbizinfo と結合できます。
 
 ## 出典と利用条件
 
 | 原典 | スキーマ |
 | --- | --- |
+| 地方厚生局「コード内容別医療機関一覧表」（[北海道](https://kouseikyoku.mhlw.go.jp/hokkaido/gyomu/gyomu/hoken_kikan/code_ichiran.html)・[東北](https://kouseikyoku.mhlw.go.jp/tohoku/gyomu/gyomu/hoken_kikan/itiran.html)・[関東信越](https://kouseikyoku.mhlw.go.jp/kantoshinetsu/chousa/shitei.html)・[東海北陸](https://kouseikyoku.mhlw.go.jp/tokaihokuriku/newpage_00287.html)・[近畿](https://kouseikyoku.mhlw.go.jp/kinki/tyousa/shinkishitei.html)・[中国四国](https://kouseikyoku.mhlw.go.jp/chugokushikoku/chousaka/iryoukikanshitei.html)・[四国](https://kouseikyoku.mhlw.go.jp/shikoku/gyomu/gyomu/hoken_kikan/shitei/index.html)・[九州](https://kouseikyoku.mhlw.go.jp/kyushu/gyomu/gyomu/hoken_kikan/index_00006.html)） | `kouseikyoku` |
+| [医療情報ネット オープンデータ](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html) | `iryo_joho_net` |
 | [介護サービス情報公表システム オープンデータ](https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html) | `kaigo` |
 | [障害福祉サービス等情報公表システム オープンデータ（WAM NET 配信）](https://www.wam.go.jp/content/wamnet/pcpub/top/sfkopendata/) | `shougai` |
 | [NDB オープンデータ](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html) | `ndb` |
@@ -23,6 +25,9 @@
 
 | テーブル | 内容 |
 | --- | --- |
+| `kouseikyoku.insured_institution` | 全国の保険医療機関・保険薬局。1 行が 1 医療機関コード |
+| `iryo_joho_net.facility` | 医療情報ネットの病院・診療所・歯科診療所・助産所・薬局。1 行が 1 施設 |
+| `iryo_joho_net.speciality` | 医療情報ネットの診療科。1 行が施設 × 診療科 |
 | `kaigo.establishment` | 全国の介護サービス事業所。1 行が事業所 × サービス種類 |
 | `shougai.establishment` | 全国の障害福祉サービス等事業所。1 行が事業所 × サービス種類 |
 | `ndb.health_checkup` | 特定健診の検査値の分布。検査項目 × 都道府県 × 検査値階層 × 性 × 年齢階級ごとの受診者数 |
@@ -73,6 +78,70 @@ WHERE m.fiscal_year = 2023 AND m.mdc = '05' AND m.has_surgery
 GROUP BY ALL
 ORDER BY patients DESC;
 ```
+
+医療機関コード 0110112489 の医療機関を引く:
+
+```sql
+SELECT name, postal_code, address, phone, institution_type, general_beds
+FROM mhlw.kouseikyoku.insured_institution
+WHERE medical_institution_code = '0110112489';
+```
+
+市区町村ごとに内科のある診療所を数える:
+
+```sql
+SELECT f.city_code, count(*) AS clinics
+FROM mhlw.iryo_joho_net.facility AS f
+WHERE f.facility_type = '診療所'
+  AND EXISTS (
+    SELECT 1 FROM mhlw.iryo_joho_net.speciality AS s
+    WHERE s.id = f.id AND s.speciality_name = '内科'
+  )
+GROUP BY ALL
+ORDER BY clinics DESC;
+```
+
+## 保険医療機関・保険薬局（kouseikyoku）
+
+地方厚生局が毎月公開する「コード内容別医療機関一覧表」を 8 局分まとめたものです。
+
+| 列 | 内容 |
+| --- | --- |
+| `medical_institution_code` | 医療機関コード（10 桁 = 都道府県 2 桁 + 点数表 1 桁 + 医療機関番号 7 桁）。点数表は 1 が医科、3 が歯科、4 が調剤 |
+| `prefecture_code` | 都道府県コード（2 桁） |
+| `fee_schedule` | 医科／歯科／薬局 |
+| `institution_number` | 医療機関番号（7 桁） |
+| `name` / `postal_code` / `address` / `phone` | 名称・郵便番号・所在地・電話番号 |
+| `institution_type` / `categories` | 病院／診療所／薬局と、一覧表の種別の欄（特定機能・地域支援・療養病床 など） |
+| `status` | 現存／休止／辞退 |
+| `designated_on` / `designation_reason` / `designation_period_start` | 指定年月日・登録理由・現在の指定期間の始期 |
+| `annex_institution_number` | 医科と歯科の両方の指定を受けた機関の、もう一方の医療機関番号 |
+| `general_beds` ほか / `beds` | 種類ごとの病床数と、一覧表の病床の欄 |
+| `departments` | 診療科（元データの略称のまま） |
+| `full_time_doctors` ほか | 常勤・非常勤の医師・歯科医師・薬剤師の数 |
+| `as_of` / `bureau` | 一覧表の時点と地方厚生局 |
+
+- 開設者と管理者は個人の氏名を含むため収録していません
+- 医科と歯科の両方の指定を受けた機関は、点数表ごとに 2 行あります
+- 市区町村コードと緯度経度は持ちません
+- 局によって一覧表の時点が 1 か月ずれることがあります
+
+## 医療情報ネット（iryo_joho_net）
+
+医療情報ネット（ナビイ）のオープンデータです。半年ごと（6 月 1 日・12 月 1 日時点）に更新されます。
+
+| 列 | 内容 |
+| --- | --- |
+| `id` | 医療情報ネットの施設の番号（医療機関コードではありません） |
+| `facility_type` | 病院／診療所／歯科診療所／助産所／薬局 |
+| `name` / `name_kana` / `short_name` / `name_en` | 名称 |
+| `prefecture_code` / `city_code` / `local_gov_code` | 都道府県コード・市区町村コード（5 桁）・全国地方公共団体コード（6 桁）。`lg_code` / `address_br` と結合可 |
+| `address` | 所在地 |
+| `latitude` / `longitude` / `geometry` | 位置（欠測の 0.0 と国外の値は NULL） |
+| `url` | ホームページ |
+| `general_beds` ほか / `total_beds` | 病床数（病院と診療所） |
+
+- `speciality` は病院・診療所・歯科診療所の 施設 × 診療科 で、`id` で `facility` と結合します。診療時間・休診日は収録していません
 
 ## 介護サービス（kaigo）
 

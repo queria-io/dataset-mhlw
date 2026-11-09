@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  - name: insured_institution
+    description: |
+      全国の保険医療機関・保険薬局の一覧。地方厚生局が毎月公開する「コード内容別医療機関一覧表」を
+      8 局分まとめたもの。1 行 = 1 医療機関コード（都道府県 2 桁 + 点数表 1 桁 + 医療機関番号 7 桁）。
+      医科と歯科の両方の指定を受けた機関は点数表ごとに 2 行を持ち、もう一方の番号を
+      annex_institution_number に持つ。
+      開設者と管理者は個人の氏名を含むため収録していない。
+      局によって公開の時点が 1 か月ずれることがある（as_of）。
+      出典: 地方厚生局「コード内容別医療機関一覧表」（厚生労働省）のデータを加工して作成。
+    access: public
+    columns:
+      - name: medical_institution_code
+      - name: prefecture_code
+      - name: fee_schedule
+      - name: institution_number
+      - name: name
+      - name: postal_code
+      - name: address
+      - name: phone
+      - name: institution_type
+      - name: categories
+      - name: status
+      - name: designated_on
+      - name: designation_reason
+      - name: designation_period_start
+      - name: annex_institution_number
+      - name: general_beds
+      - name: long_term_care_beds
+      - name: psychiatric_beds
+      - name: tuberculosis_beds
+      - name: infectious_beds
+      - name: beds
+      - name: departments
+      - name: full_time_doctors
+      - name: full_time_dentists
+      - name: full_time_pharmacists
+      - name: part_time_doctors
+      - name: part_time_dentists
+      - name: part_time_pharmacists
+      - name: as_of
+      - name: bureau
