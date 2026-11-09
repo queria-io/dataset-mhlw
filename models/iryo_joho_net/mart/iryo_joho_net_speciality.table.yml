@@ -1,0 +1,32 @@
+schema: iryo_joho_net
+name: speciality
+title: 医療機関の診療科（医療情報ネット）
+description: |-
+  病院・診療所・歯科診療所が医療情報ネット（ナビイ）で公表している診療科です。1 行が 施設 × 診療科です。
+
+  - 施設の名称や所在地は facility と id で結合してください
+  - 診療時間は収録していません
+keywords:
+  - 診療科
+  - 医療機関
+  - 病院
+  - 診療所
+  - 歯科
+  - 医療情報ネット
+  - 厚生労働省
+published: true
+themes: [social_security_health]
+sources:
+  - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
+fields:
+  - name: id
+    title: ID
+    description: 医療情報ネットの施設の番号。facility と結合するキー
+  - name: speciality_code
+    title: 診療科目コード
+    description: 医療情報ネットの診療科目コード（5 桁）
+  - name: speciality_name
+    title: 診療科目名
+  - name: as_of
+    title: 時点
+    description: オープンデータの基準日（6 月 1 日または 12 月 1 日）

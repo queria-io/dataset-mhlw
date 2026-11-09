@@ -1,0 +1,6 @@
+schema: iryo_joho_net
+name: raw_iryo_joho_net_facility
+description: |-
+  医療情報ネット オープンデータの施設票の生データ。5 種類の施設票の共通の列を main.py が
+  統合した NDJSON を読み込む。
+published: false
