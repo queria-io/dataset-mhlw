@@ -245,7 +245,7 @@ def _links(page: str) -> list[tuple[str, str]]:
     """ページの a 要素を (href, 空白を除いたリンク文字列) で返す。"""
     return [
         (href, re.sub(r"\s|<[^>]+>", "", html.unescape(text)))
-        for href, text in re.findall(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', page, re.S)
+        for href, text in re.findall(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', page, re.DOTALL)
     ]
 
 
