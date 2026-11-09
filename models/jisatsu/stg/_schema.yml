@@ -2,3 +2,4 @@ version: 2
 
 models:
   - name: stg_suicide_municipality
+  - name: stg_suicide_municipality_monthly

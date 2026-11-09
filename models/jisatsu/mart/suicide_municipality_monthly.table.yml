@@ -1,0 +1,65 @@
+schema: jisatsu
+name: suicide_municipality_monthly
+title: 市区町村別の自殺者数（月別）
+description: |-
+  市区町村別・月別の自殺者数を、住居地と発見地の集計、性、年齢階級ごとに持ちます（2022 年 1 月から公表済みの最新月まで、毎月更新）。
+
+  - 確定値が出ていない年は暫定値です（status）。暫定値は確定値の公表時に差し替わります
+  - 自殺者が 0 人の市区町村は行がありません
+  - 政令指定都市と特別区は市の行と区の行の両方を持ちます。合計は area_level = '区' を除いて足してください
+  - 12 か月の和は年計（suicide_municipality）とわずかに異なります。年の値は suicide_municipality を使ってください
+keywords:
+  - 自殺
+  - 自殺対策
+  - 自殺統計
+  - 市区町村
+  - 月次
+  - 暫定値
+  - 厚生労働省
+published: true
+themes: [social_security_health]
+sources:
+  - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
+fields:
+  - name: year
+    title: 年
+    description: 集計対象の年（西暦）。自殺日で集計
+  - name: month
+    title: 月
+    description: 集計対象の月（1〜12）。自殺日で集計
+  - name: status
+    title: 確定・暫定
+    description: 確定値／暫定値。暫定値は確定値の公表時に差し替わる
+  - name: location_basis
+    title: 集計地
+    description: 住居地（自殺者の住居があった市区町村）／発見地（自殺死体が発見された市区町村）
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 全国地方公共団体コードの上 2 桁。area_level が都道府県不詳の行は NULL
+    semantic: { role: entity, name: prefecture }
+  - name: local_gov_code
+    title: 地方公共団体コード
+    description: 全国地方公共団体コード（6 桁）。市区町村と区の行だけが持つ
+    semantic: { role: entity, name: city }
+  - name: city_code
+    title: 市区町村コード
+    description: 地方公共団体コードの上 5 桁。lg_code / address_br と結合できる
+    semantic: { role: entity, name: city }
+  - name: municipality
+    title: 市区町村名
+    description: 都道府県名を付けた市区町村名（例 北海道函館市、札幌市中央区）
+  - name: area_level
+    title: 行の種別
+    description: 行の種別。市区町村／区／区不詳／市区町村不詳／都道府県不詳
+  - name: sex
+    title: 性
+    description: 総数／男／女
+  - name: attribute
+    title: 属性区分
+    description: 総数／年齢階級
+  - name: category
+    title: 区分
+    description: 属性区分の中の区分（年齢階級なら 20-29歳 など）。attribute が総数の行は総数
+  - name: count
+    title: 自殺者数
+    description: 当該区分の自殺者数（人）。秘匿された欄は NULL
