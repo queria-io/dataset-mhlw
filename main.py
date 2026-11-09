@@ -7,7 +7,7 @@
 3. ndb:     NDB オープンデータの特定健診 検査値 Excel を取得し、long 形式の NDJSON へ統合する。
 4. josei:   女性の活躍推進企業データベースの全体版 CSV を取得し、企業属性と主要指標に
             絞った NDJSON へ整形する。
-5. jisatsu: 地域における自殺の基礎資料の年計 Excel を取得し、市区町村別の自殺者数を
+5. jisatsu: 地域における自殺の基礎資料の年計と月次の Excel を取得し、市区町村別の自殺者数を
             long 形式の NDJSON へ統合する。
 6. dpc:     DPC 退院患者調査の施設概要表と MDC 別医療機関別件数の Excel を年度ごとに取得し、
             2 本の NDJSON へ統合する。
@@ -39,6 +39,7 @@ SHOUGAI_NDJSON_PATH = WORK_DIR / "shougai_establishment.ndjson"
 NDB_NDJSON_PATH = WORK_DIR / "ndb_health_checkup.ndjson"
 JOSEI_NDJSON_PATH = WORK_DIR / "josei_katsuyaku_company.ndjson"
 JISATSU_NDJSON_PATH = WORK_DIR / "jisatsu_municipality.ndjson"
+JISATSU_MONTHLY_NDJSON_PATH = WORK_DIR / "jisatsu_municipality_monthly.ndjson"
 DPC_HOSPITAL_NDJSON_PATH = WORK_DIR / "dpc_hospital.ndjson"
 DPC_MDC_NDJSON_PATH = WORK_DIR / "dpc_mdc_patients.ndjson"
 KOUSEIKYOKU_NDJSON_PATH = WORK_DIR / "kouseikyoku_insured_institution.ndjson"
@@ -76,6 +77,8 @@ def main() -> None:
     logger.info("5/9: jisatsu (地域における自殺の基礎資料)")
     rows = jisatsu.download_and_flatten(JISATSU_NDJSON_PATH)
     logger.info(f"  jisatsu_municipality.ndjson: {rows} rows")
+    rows = jisatsu.download_and_flatten_monthly(JISATSU_MONTHLY_NDJSON_PATH)
+    logger.info(f"  jisatsu_municipality_monthly.ndjson: {rows} rows")
 
     logger.info("6/9: dpc (DPC 退院患者調査)")
     hospitals, mdc = dpc.download_and_flatten(DPC_HOSPITAL_NDJSON_PATH, DPC_MDC_NDJSON_PATH)

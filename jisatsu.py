@@ -1,4 +1,4 @@
-"""地域における自殺の基礎資料（市区町村別・年計）の取得・整形。
+"""地域における自殺の基礎資料（市区町村別の年計と月次）の取得・整形。
 
 厚生労働省自殺対策推進室が警察庁の自殺統計を再集計した「地域における自殺の基礎資料」の
 確定値のうち、年計の「自殺日集計」ZIP を取得し、市区町村別の 2 表を縦持ち（long 形式）の
@@ -15,6 +15,7 @@ NDJSON に統合する。
 職業・原因動機の区分が変わり、それ以前の年とは列が対応しない。
 """
 
+import html
 import io
 import json
 import re
@@ -32,6 +33,14 @@ ANNUAL_ZIP_URLS = {
     2024: "https://www.mhlw.go.jp/content/001464821.zip",
     2025: "https://www.mhlw.go.jp/content/001680831.zip",
 }
+
+# 月次の ZIP は年ごとのページに「令和N年M月」のリンクで並ぶ。確定値が出た年は月次の ZIP も
+# 確定値に差し替わり、まだの年は暫定値。ZIP の中身は年計と同じ A7・A8 表で、値がその月の 1 か月分。
+INDEX_URL = "https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html"
+_SITE = "https://www.mhlw.go.jp"
+_FIRST_YEAR = 2022
+# 月次は件数が多いので、属性区分のうち総数と年齢階級だけを持つ。
+_MONTHLY_ATTRIBUTES = {"総数", "年齢階級"}
 
 _TABLES = {"A7": "住居地", "A8": "発見地"}
 _SHEET_SEX = {0: "総数", 1: "男", 2: "女"}
@@ -168,9 +177,8 @@ def _flatten_sheet(sheet: xlrd.sheet.Sheet, year: int, basis: str, sex: str) -> 
     return records
 
 
-def flatten_zip(zip_bytes: bytes, year: int, out) -> int:
-    """年計 ZIP の A7・A8 表を long 形式で書き出す。行数を返す。"""
-    rows = 0
+def _sheets(zip_bytes: bytes, label: str):
+    """ZIP の A7・A8 表の 3 シート（総数・男・女）を (表, 性, シート) で返す。"""
     found = set()
     with zipfile.ZipFile(io.BytesIO(zip_bytes), metadata_encoding="cp932") as zf:
         for name in sorted(zf.namelist()):
@@ -182,13 +190,91 @@ def flatten_zip(zip_bytes: bytes, year: int, out) -> int:
             book = xlrd.open_workbook(file_contents=zf.read(name))
             for index, sex in _SHEET_SEX.items():
                 sheet = book.sheet_by_index(index)
-                _check_layout(sheet, f"{year} {table} {sex}")
-                for record in _flatten_sheet(sheet, year, _TABLES[table], sex):
-                    out.write(json.dumps(record, ensure_ascii=False) + "\n")
-                    rows += 1
+                _check_layout(sheet, f"{label} {table} {sex}")
+                yield table, sex, sheet
     if found != set(_TABLES):
-        raise ValueError(f"{year}: A7・A8 表が揃っていない: {sorted(found)}")
+        raise ValueError(f"{label}: A7・A8 表が揃っていない: {sorted(found)}")
+
+
+def _write(records, out) -> int:
+    rows = 0
+    for record in records:
+        out.write(json.dumps(record, ensure_ascii=False) + "\n")
+        rows += 1
     return rows
+
+
+def flatten_zip(zip_bytes: bytes, year: int, out) -> int:
+    """年計 ZIP の A7・A8 表を long 形式で書き出す。行数を返す。"""
+    return sum(
+        _write(_flatten_sheet(sheet, year, _TABLES[table], sex), out)
+        for table, sex, sheet in _sheets(zip_bytes, str(year))
+    )
+
+
+def _monthly_status(sheet: xlrd.sheet.Sheet, year: int, month: int) -> str:
+    """表の見出し（例「令和8年9月暫定値」）から確定値・暫定値を読む。年月が違えば止める。"""
+    title = str(sheet.cell_value(0, 3)).strip()
+    m = re.fullmatch(r"令和(\d+)年(\d+)月(確定値|暫定値)", title)
+    if not m or (int(m.group(1)) + 2018, int(m.group(2))) != (year, month):
+        raise ValueError(f"{year}-{month:02d}: 表の見出しが想定と異なる: {title}")
+    return m.group(3)
+
+
+def flatten_monthly_zip(zip_bytes: bytes, year: int, month: int, out) -> int:
+    """月次 ZIP の A7・A8 表のうち総数と年齢階級を long 形式で書き出す。行数を返す。"""
+    return sum(
+        _write(
+            (
+                {**record, "month": month, "status": _monthly_status(sheet, year, month)}
+                for record in _flatten_sheet(sheet, year, _TABLES[table], sex)
+                if record["attribute"] in _MONTHLY_ATTRIBUTES
+            ),
+            out,
+        )
+        for table, sex, sheet in _sheets(zip_bytes, f"{year}-{month:02d}")
+    )
+
+
+def _fetch(url: str) -> bytes:
+    with urllib.request.urlopen(url) as resp:
+        return resp.read()
+
+
+def _links(page: str) -> list[tuple[str, str]]:
+    """ページの a 要素を (href, 空白を除いたリンク文字列) で返す。"""
+    return [
+        (href, re.sub(r"\s|<[^>]+>", "", html.unescape(text)))
+        for href, text in re.findall(r'<a[^>]+href="([^"]+)"[^>]*>(.*?)</a>', page, re.DOTALL)
+    ]
+
+
+def _to_ascii_digits(text: str) -> str:
+    return text.translate(str.maketrans("０１２３４５６７８９", "0123456789"))
+
+
+def discover_monthly_zips(index_page: str, fetch_page) -> list[tuple[int, int, str]]:
+    """一覧ページから令和 4 年以降の年ごとのページを辿り、(年, 月, ZIP の URL) を返す。"""
+    year_pages = [
+        (int(m.group(1)) + 2018, href)
+        for href, text in _links(index_page)
+        if (m := re.search(r"令和(\d+)年", _to_ascii_digits(text))) and "jisatsu_kiso_r" in href
+    ]
+    found = [
+        (year, int(m.group(2)), _SITE + href if href.startswith("/") else href)
+        for year, page_href in year_pages
+        if year >= _FIRST_YEAR
+        for href, text in _links(fetch_page(_SITE + page_href))
+        if href.endswith(".zip")
+        and (m := re.fullmatch(r"令和(\d+)年(\d+)月", _to_ascii_digits(text)))
+        and int(m.group(1)) + 2018 == year
+    ]
+    if not found:
+        raise ValueError("月次の ZIP が見つからない。ページの作りが変わった可能性がある")
+    keys = [(y, mo) for y, mo, _ in found]
+    if len(keys) != len(set(keys)):
+        raise ValueError(f"同じ年月の ZIP が複数ある: {sorted(keys)}")
+    return sorted(found)
 
 
 def download_and_flatten(ndjson_path: Path) -> int:
@@ -199,3 +285,10 @@ def download_and_flatten(ndjson_path: Path) -> int:
             with urllib.request.urlopen(url) as resp:
                 rows += flatten_zip(resp.read(), year, out)
     return rows
+
+
+def download_and_flatten_monthly(ndjson_path: Path) -> int:
+    """令和 4 年以降の月次 ZIP を取得し、統合 NDJSON を書き出す。行数を返す。"""
+    zips = discover_monthly_zips(_fetch(INDEX_URL).decode("utf-8"), lambda url: _fetch(url).decode("utf-8"))
+    with ndjson_path.open("w", encoding="utf-8") as out:
+        return sum(flatten_monthly_zip(_fetch(url), year, month, out) for year, month, url in zips)

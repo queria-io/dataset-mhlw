@@ -1,0 +1,7 @@
+schema: jisatsu
+name: raw_suicide_municipality_monthly
+description: |-
+  地域における自殺の基礎資料 市区町村別・月次の生データ。
+  月次 ZIP の A7 表（住居地）・A8 表（発見地）のうち総数と年齢階級を main.py が long 形式に統合した
+  NDJSON を読み込む。
+published: false

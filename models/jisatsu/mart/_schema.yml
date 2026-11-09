@@ -38,3 +38,32 @@ models:
       - name: category
       - name: parent_category
       - name: count
+  - name: suicide_municipality_monthly
+    description: |
+      市区町村別・月別の自殺者数。厚生労働省「地域における自殺の基礎資料」の月次の
+      自殺日集計を収録する。2022 年 1 月から公表済みの最新月まで。確定値が出た年は確定値、
+      まだの年は暫定値で、status で区別する。暫定値は確定値の公表時に差し替わる。
+      住居地と発見地の 2 通りの集計を location_basis で持つ。
+      1 行 = 年月 × 集計地 × 市区町村 × 性 × 属性区分 × 区分 の自殺者数。属性区分は総数と
+      年齢階級だけを持つ。ほかの属性区分は年計の suicide_municipality にある。
+      自殺者が 0 人の市区町村は行が無い。
+      政令指定都市・東京都特別区の行の扱いは suicide_municipality と同じ。
+      12 か月を足した値は、年計の suicide_municipality と全国で 0.1〜0.2% 異なる。
+      年の値には suicide_municipality を使う。
+      出典: 地域における自殺の基礎資料（厚生労働省）のデータを加工して作成。
+      https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
+    access: public
+    columns:
+      - name: year
+      - name: month
+      - name: status
+      - name: location_basis
+      - name: prefecture_code
+      - name: local_gov_code
+      - name: city_code
+      - name: municipality
+      - name: area_level
+      - name: sex
+      - name: attribute
+      - name: category
+      - name: count

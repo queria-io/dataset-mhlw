@@ -33,6 +33,7 @@
 | `ndb.health_checkup` | 特定健診の検査値の分布。検査項目 × 都道府県 × 検査値階層 × 性 × 年齢階級ごとの受診者数 |
 | `josei_katsuyaku.company` | 企業が公表した女性活躍・両立支援の指標。1 行が 1 企業 |
 | `jisatsu.suicide_municipality` | 市区町村別・年別の自殺者数。年 × 集計地 × 市区町村 × 性 × 属性区分 × 区分 |
+| `jisatsu.suicide_municipality_monthly` | 市区町村別・月別の自殺者数。年月 × 集計地 × 市区町村 × 性 × 年齢階級 |
 | `dpc.hospital` | DPC 退院患者調査に参加した病院の施設概要。1 行が年度 × 病院 |
 | `dpc.mdc_patients` | 病院別の退院患者数。年度 × 病院 × MDC（主要診断群）× 手術の有無 |
 
@@ -226,7 +227,7 @@ NDB（ナショナルデータベース）オープンデータの特定健診�
 
 ## 自殺統計（jisatsu）
 
-警察庁の自殺統計を厚生労働省が市区町村別に再集計した資料の確定値のうち、年計の自殺日集計（A7 表・A8 表）を収録しています。2022 年から 2025 年です。
+警察庁の自殺統計を厚生労働省が市区町村別に再集計した資料の自殺日集計（A7 表・A8 表）を収録しています。`jisatsu.suicide_municipality` は確定値の年計で、2022 年から 2025 年です。
 
 | 列 | 内容 |
 | --- | --- |
@@ -248,6 +249,28 @@ NDB（ナショナルデータベース）オープンデータの特定健診�
 - 原因・動機は 1 人につき 4 つまで計上するため、区分の和は総数と一致しません
 - 自殺死亡率は収録していません。率が必要なときは人口のテーブルと `city_code` で結合してください
 - 2022 年 1 月に自殺統計原票が見直され、職業と原因・動機の区分が変わったため、それより前の年は収録していません
+
+`jisatsu.suicide_municipality_monthly` は同じ資料の月次の自殺日集計です。2022 年 1 月から公表済みの最新月までを持ち、毎月更新します。列は `suicide_municipality` に `month`（月）と `status`（確定値／暫定値）を加えたもので、`parent_category` はありません。
+
+- 確定値が出た年は確定値、まだの年は暫定値です。厚生労働省は確定値の公表時に月次の資料も確定値に差し替えるので、このテーブルも次の更新で差し替わります
+- 属性区分は総数と年齢階級だけです。ほかの属性区分は年計のテーブルにあります
+- 12 か月を足した値は、年計のテーブルと全国で 0.1〜0.2% 異なります。年の値は年計のテーブルを使ってください
+- 自殺者が 0 人の市区町村は行がありません。政令指定都市・特別区の行の扱いは年計のテーブルと同じです
+
+直近 12 か月の自殺者数（住居地）を市区町村ごとに出す:
+
+```sql
+WITH latest AS (
+  SELECT max(year * 12 + month - 1) AS ym FROM mhlw.jisatsu.suicide_municipality_monthly
+)
+SELECT city_code, municipality, sum(count) AS suicides
+FROM mhlw.jisatsu.suicide_municipality_monthly, latest
+WHERE location_basis = '住居地' AND sex = '総数' AND attribute = '総数'
+  AND area_level = '市区町村'
+  AND year * 12 + month - 1 > latest.ym - 12
+GROUP BY ALL
+ORDER BY suicides DESC;
+```
 
 ## DPC 退院患者調査（dpc）
 
