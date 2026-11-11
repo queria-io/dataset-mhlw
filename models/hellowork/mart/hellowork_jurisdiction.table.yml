@@ -1,0 +1,46 @@
+schema: hellowork
+name: jurisdiction
+title: ハローワークの管轄区域
+description: |-
+  全国の公共職業安定所（ハローワーク）が受け持つ区域です。厚生労働省の「都道府県労働局所在地一覧」の管轄一覧表を 47 都道府県分まとめています。1 行が 1 つの安定所（本所・出張所・分室）です。
+
+  - 出張所・分室の区域は本所の区域の一部で、本所の行にも同じ区域が含まれます
+  - 区域は一覧の文のまま持ちます（例「土浦市、つくば市、かすみがうら市、稲敷郡のうち阿見町」）。項目ごとに分けたものは jurisdiction_area にあります
+  - 一覧の更新が遅れて、合併・改称の前の市町村名が残っていることがあります（例 篠山市）
+  - 宮城県の塩釜、京都府の二条労働・千本労働の分室、福岡県の門司（港湾労働課）は、所在地の表に行がありません
+keywords:
+  - ハローワーク
+  - 公共職業安定所
+  - 管轄区域
+  - 管轄
+  - 労働局
+  - 厚生労働省
+published: true
+themes: [labour]
+sources:
+  - title: 厚生労働省 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
+    path: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
+fields:
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 都道府県コード（2 桁）
+    semantic: { role: entity, name: prefecture }
+  - name: prefecture_name
+    title: 都道府県名
+  - name: name
+    title: 名称
+    description: 管轄一覧表に書かれた名称（例 水戸、笠間［出］）
+  - name: office_name
+    title: 安定所名
+    description: name から出張所・分室の印と添え書きを除いた名前。office と結合するキー
+  - name: office_kind
+    title: 種類
+    description: main=本所、branch=出張所、annex=分室
+  - name: jurisdiction
+    title: 管轄区域
+    description: 管轄一覧表の管轄区域の欄の全文
+  - name: item_count
+    title: 項目の数
+    description: 管轄区域を括弧の外の読点で区切った項目の数。jurisdiction_area の行数と同じ
+  - name: source_url
+    title: 出典のページ

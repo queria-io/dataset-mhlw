@@ -66,3 +66,8 @@ models:
         +materialized: view
       mart:
         +materialized: table
+    hellowork:
+      raw:
+        +materialized: table
+      mart:
+        +materialized: table

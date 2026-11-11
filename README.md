@@ -1,6 +1,6 @@
 # 厚生労働省
 
-厚生労働省が公開するオープンデータのうち、全国の保険医療機関・保険薬局（医療機関コード）、医療機関・薬局の所在地と診療科、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数を、SQL で検索・集計できるテーブルにしたデータセットです。事業所は市区町村コードで lg_code・address_br と、企業は法人番号で houjin_bangou・gbizinfo と結合できます。
+厚生労働省が公開するオープンデータのうち、全国の保険医療機関・保険薬局（医療機関コード）、医療機関・薬局の所在地と診療科、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数、ハローワーク（公共職業安定所）の所在地と管轄区域を、SQL で検索・集計できるテーブルにしたデータセットです。事業所は市区町村コードで lg_code・address_br と、企業は法人番号で houjin_bangou・gbizinfo と結合できます。
 
 ## 出典と利用条件
 
@@ -14,6 +14,7 @@
 | [女性の活躍推進企業データベース オープンデータ](https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/) | `josei_katsuyaku` |
 | [地域における自殺の基礎資料](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html) | `jisatsu` |
 | [DPC 導入の影響評価に係る調査「退院患者調査」の結果報告](https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html) | `dpc` |
+| [都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧](https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html) | `hellowork` |
 
 - いずれも厚生労働省が公開するデータを加工して作成したものです
 - 厚生労働省ホームページ利用規約に基づく公共データ利用規約（第1.0版、PDL1.0）およびクリエイティブ・コモンズ表示 4.0（CC BY 4.0）に従います
@@ -28,6 +29,9 @@
 | `kouseikyoku.insured_institution` | 全国の保険医療機関・保険薬局。1 行が 1 医療機関コード |
 | `iryo_joho_net.facility` | 医療情報ネットの病院・診療所・歯科診療所・助産所・薬局。1 行が 1 施設 |
 | `iryo_joho_net.speciality` | 医療情報ネットの診療科。1 行が施設 × 診療科 |
+| `hellowork.office` | ハローワークの所在地。1 行が所在地一覧の 1 行（本所・出張所・分室・庁舎・プラザなど） |
+| `hellowork.jurisdiction` | ハローワークの管轄区域。1 行が 1 安定所 |
+| `hellowork.jurisdiction_area` | 管轄区域を項目ごとに分けたもの。1 行が安定所 × 項目 |
 | `kaigo.establishment` | 全国の介護サービス事業所。1 行が事業所 × サービス種類 |
 | `shougai.establishment` | 全国の障害福祉サービス等事業所。1 行が事業所 × サービス種類 |
 | `ndb.health_checkup` | 特定健診の検査値の分布。検査項目 × 都道府県 × 検査値階層 × 性 × 年齢階級ごとの受診者数 |
@@ -143,6 +147,24 @@ ORDER BY clinics DESC;
 | `general_beds` ほか / `total_beds` | 病床数（病院と診療所） |
 
 - `speciality` は病院・診療所・歯科診療所の 施設 × 診療科 で、`id` で `facility` と結合します。診療時間・休診日は収録していません
+
+## ハローワーク（hellowork）
+
+厚生労働省の「都道府県労働局所在地一覧」の公共職業安定所の表と管轄一覧表です。3 つのテーブルは
+`prefecture_code`・`office_name`・`office_kind`（main=本所、branch=出張所、annex=分室）で結合します。
+
+- `office` は緯度経度を持ちません。`full_address` を Queria の `geocode()` に渡すと座標が得られます
+- `jurisdiction_area` は市区町村コードを持ちません。`name_only` が true の項目は市区町村・郡の名前だけなので、市区町村の一覧と名前で照合できます。`after_partial` が true の項目は「Xのうち」の後ろに続く町・字のことがあります
+- 一覧の更新が遅れて、合併・改称の前の市町村名が残っていることがあります
+
+```sql
+-- 茨城県のハローワークの管轄（市区町村・郡の名前だけの項目）
+SELECT a.office_name, a.municipality_name, o.full_address
+FROM mhlw.hellowork.jurisdiction_area AS a
+JOIN mhlw.hellowork.office AS o USING (prefecture_code, office_name, office_kind)
+WHERE a.prefecture_code = '08' AND a.name_only AND NOT a.after_partial
+ORDER BY a.office_name, a.item_order;
+```
 
 ## 介護サービス（kaigo）
 

@@ -1,0 +1,9 @@
+version: 2
+
+models:
+  - name: raw_hellowork_office
+    description: |
+      厚生労働省「都道府県労働局所在地一覧」の公共職業安定所の表の生データ。1 行 = 1 施設。
+  - name: raw_hellowork_jurisdiction
+    description: |
+      厚生労働省「都道府県労働局所在地一覧」の公共職業安定所の管轄一覧表の生データ。1 行 = 1 安定所。

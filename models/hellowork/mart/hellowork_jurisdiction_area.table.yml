@@ -1,0 +1,49 @@
+schema: hellowork
+name: jurisdiction_area
+title: ハローワークの管轄区域（項目別）
+description: |-
+  公共職業安定所（ハローワーク）の管轄区域を、管轄一覧表の読点で区切った項目ごとに 1 行にしたものです。市区町村の単位で管轄を地図に塗るときに使います。
+
+  - name_only が true の項目は「水戸市」「東海村」「猿島郡」のように市区町村・郡の名前だけです。郡はその郡の町村すべてを指します
+  - 「稲敷郡のうち阿見町」「青森市（黒石公共職業安定所の管轄区域を除く。）」のように絞り込みの付いた項目は name_only が false で、municipality_name に先頭の市区町村・郡の名前が入ります
+  - 「倉敷市のうち児島稗田町、児島柳田町」のように町・字が続くとき、後ろの項目（児島柳田町）は町・字の名前です。字の名前は市区町村と同じ語尾を持つことがあるので、after_partial が true の行は市区町村の一覧と照合して確かめてください
+  - 市区町村コードは持ちません。名前で市区町村の一覧と照合してください。合併・改称の前の名前が残っていることがあります
+keywords:
+  - ハローワーク
+  - 公共職業安定所
+  - 管轄区域
+  - 市区町村
+  - 厚生労働省
+published: true
+themes: [labour]
+sources:
+  - title: 厚生労働省 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
+    path: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
+fields:
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 都道府県コード（2 桁）
+    semantic: { role: entity, name: prefecture }
+  - name: prefecture_name
+    title: 都道府県名
+  - name: office_name
+    title: 安定所名
+    description: jurisdiction・office と結合するキー
+  - name: office_kind
+    title: 種類
+    description: main=本所、branch=出張所、annex=分室
+  - name: item_order
+    title: 項目の順
+    description: 管轄区域の中の項目の順（1 から）
+  - name: area_text
+    title: 項目
+    description: 管轄区域を括弧の外の読点で区切った 1 項目（例 水戸市、稲敷郡のうち阿見町、川口荒谷）
+  - name: municipality_name
+    title: 市区町村・郡の名前
+    description: name_only の項目はその名前、「Xのうち…」「X（…）」の形の項目は X。町・字だけの項目は NULL
+  - name: name_only
+    title: 名前だけの項目
+    description: 項目が市区町村・郡の名前だけ（語尾が 市・区・町・村・郡 で、絞り込みが無い）なら true
+  - name: after_partial
+    title: 「のうち」の後ろ
+    description: 同じ安定所の前の項目に「のうち」があれば true。この行の項目は、前の項目の市区町村の中の町・字のことがある

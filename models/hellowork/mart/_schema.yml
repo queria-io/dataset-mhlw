@@ -1,0 +1,17 @@
+version: 2
+
+models:
+  - name: hellowork_office
+    description: |
+      全国の公共職業安定所（ハローワーク）の所在地。1 行 = 厚生労働省「都道府県労働局所在地一覧」の 1 行。
+      出典: 厚生労働省「都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧」を加工して作成。
+    access: public
+  - name: hellowork_jurisdiction
+    description: |
+      全国の公共職業安定所（ハローワーク）の管轄区域。1 行 = 1 安定所。
+      出典: 厚生労働省「都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧」の管轄一覧表を加工して作成。
+    access: public
+  - name: hellowork_jurisdiction_area
+    description: |
+      公共職業安定所（ハローワーク）の管轄区域を項目ごとに 1 行にしたもの。
+    access: public
