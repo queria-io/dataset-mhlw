@@ -1,0 +1,5 @@
+schema: hellowork
+name: raw_hellowork_jurisdiction
+description: |-
+  厚生労働省「都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧」の公共職業安定所の管轄一覧表を、main.py が 47 都道府県分まとめた NDJSON を読み込む。
+published: false

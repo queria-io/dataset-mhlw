@@ -2,9 +2,9 @@ spec_version: "0.1"
 name: mhlw
 title: 厚生労働省
 description: |-
-  厚生労働省が公開する、全国の保険医療機関・保険薬局（医療機関コード）と医療機関・薬局の所在地、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数です。事業所と医療情報ネットの施設は市区町村コード、企業は法人番号で他のデータセットと結合できます。
+  厚生労働省が公開する、全国の保険医療機関・保険薬局（医療機関コード）と医療機関・薬局の所在地、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数、ハローワーク（公共職業安定所）の所在地と管轄区域です。事業所と医療情報ネットの施設は市区町村コード、企業は法人番号で他のデータセットと結合できます。
 
-  出典：厚生労働省（地方厚生局「コード内容別医療機関一覧表」、医療情報ネット オープンデータ、介護サービス情報公表システム、障害福祉サービス等情報公表システム、NDB オープンデータ、女性の活躍推進企業データベース、地域における自殺の基礎資料、DPC 導入の影響評価に係る調査「退院患者調査」）を加工して作成。
+  出典：厚生労働省（地方厚生局「コード内容別医療機関一覧表」、医療情報ネット オープンデータ、介護サービス情報公表システム、障害福祉サービス等情報公表システム、NDB オープンデータ、女性の活躍推進企業データベース、地域における自殺の基礎資料、DPC 導入の影響評価に係る調査「退院患者調査」、都道府県労働局所在地一覧）を加工して作成。
 keywords:
   - 介護
   - 障害福祉
@@ -26,6 +26,8 @@ keywords:
   - 診療所
   - 薬局
   - 医療情報ネット
+  - ハローワーク
+  - 公共職業安定所
   - 厚生労働省
 homepage: https://github.com/queria-io/dataset-mhlw
 language: ja
@@ -47,6 +49,8 @@ sources:
     path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
   - title: DPC 導入の影響評価に係る調査「退院患者調査」の結果報告
     path: https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
+  - title: 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
+    path: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
 
 contributors:
   - title: 厚生労働省
@@ -86,6 +90,10 @@ ai_context:
     iryo_joho_net.facility は医療情報ネットの病院・診療所・歯科診療所・助産所・薬局で、
     市区町村コードと緯度経度を持つ。id は医療情報ネットの番号で、医療機関コードではない。
     診療科は iryo_joho_net.speciality と id で結合する。
+    hellowork.office はハローワークの所在地（本所・出張所・分室のほかプラザや相談窓口も含む）、
+    hellowork.jurisdiction は安定所ごとの管轄区域の文、hellowork.jurisdiction_area はそれを項目に分けたもの。
+    3 つは prefecture_code・office_name・office_kind で結合する。緯度経度と市区町村コードは持たないので、
+    座標は full_address を geocode() に渡し、管轄は municipality_name を市区町村名と照合する。
   synonyms: [医療機関コード, 保険医療機関, 介護事業所, 障害福祉サービス, 特定健診, NDB, 女性活躍推進, えるぼし]
   examples:
     - 市区町村別の介護事業所の数を出したい
@@ -111,3 +119,5 @@ schemas:
     title: 保険医療機関・保険薬局（地方厚生局）
   - name: iryo_joho_net
     title: 医療情報ネット
+  - name: hellowork
+    title: ハローワーク（公共職業安定所）

@@ -1,0 +1,62 @@
+schema: hellowork
+name: office
+title: ハローワークの所在地
+description: |-
+  全国の公共職業安定所（ハローワーク）の名称・郵便番号・所在地・電話番号です。厚生労働省の「都道府県労働局所在地一覧」を 47 都道府県分まとめています。1 行が一覧の 1 行です。
+
+  - 本所・出張所・分室のほか、庁舎（本庁舎・分庁舎）やハローワークプラザ・マザーズハローワーク・職業相談窓口も 1 行ずつあります。管轄区域を持つ安定所に絞るときは has_jurisdiction で絞ってください
+  - 緯度経度は持ちません。full_address を Queria の geocode() に渡すと座標が得られます
+  - 管轄区域は jurisdiction と prefecture_code・office_name・office_kind で結合してください
+keywords:
+  - ハローワーク
+  - 公共職業安定所
+  - 職業安定所
+  - 所在地
+  - 労働局
+  - 厚生労働省
+published: true
+themes: [labour]
+sources:
+  - title: 厚生労働省 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
+    path: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
+fields:
+  - name: prefecture_code
+    title: 都道府県コード
+    description: 都道府県コード（2 桁）
+    semantic: { role: entity, name: prefecture }
+  - name: prefecture_name
+    title: 都道府県名
+  - name: name
+    title: 名称
+    description: 一覧に書かれた名称（例 水戸、笠間(出)、横浜（本庁舎）、ハローワークプラザよこはま）。「公共職業安定所」「ハローワーク」は付かないことが多い
+  - name: office_name
+    title: 安定所名
+    description: name から出張所・分室の印と、庁舎・窓口の添え書きを除いた名前（例 笠間、横浜）。jurisdiction と結合するキー
+  - name: office_kind
+    title: 種類
+    description: main=本所（印の無いもの）、branch=出張所（(出)）、annex=分室（(分)）。ハローワークプラザなども main になる
+  - name: has_jurisdiction
+    title: 管轄一覧表にある
+    description: 管轄一覧表に同じ office_name・office_kind の安定所があれば true。ハローワークプラザや相談窓口など、管轄区域を持たない施設は false
+  - name: postal_code
+    title: 郵便番号
+    description: 7 桁（ハイフンなし）
+  - name: address
+    title: 所在地
+    description: 一覧に書かれた所在地。多くは都道府県名を含まない
+  - name: full_address
+    title: 所在地（都道府県から）
+    description: address の先頭に都道府県名を付けたもの
+  - name: phone
+    title: 電話番号
+    description: 電話の欄の最初の番号。部門ごとに番号が分かれる施設は phone_text を見てください。東京の分庁舎は本庁舎と同じ欄なので NULL
+  - name: fax
+    title: FAX 番号
+  - name: phone_text
+    title: 電話の欄
+    description: 一覧の電話の欄の全文（改行は「 / 」）
+  - name: guide_url
+    title: 案内図の URL
+    description: 一覧からリンクされた、各労働局のサイトの案内図・アクセスのページ
+  - name: source_url
+    title: 出典のページ
