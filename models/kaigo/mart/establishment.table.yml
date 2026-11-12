@@ -12,8 +12,6 @@ keywords:
   - 事業所
   - GIS
   - 法人番号
-published: true
-themes: [social_security_health]
 sources:
   - path: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
 fields:
@@ -30,15 +28,15 @@ fields:
   - name: local_gov_code
     title: 地方公共団体コード
     description: 全国地方公共団体コード（6 桁 = 5 桁自治体コード + チェックデジット）
-    semantic: { role: entity, name: city }
+    annotations: { queria: { semantic: { role: entity, name: city } } }
   - name: prefecture_code
     title: 都道府県コード
     description: 地方公共団体コードの上 2 桁
-    semantic: { role: entity, name: prefecture }
+    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
   - name: city_code
     title: 市区町村コード
     description: 地方公共団体コードの上 5 桁（チェックデジットを除く）。lg_code / address_br と結合可
-    semantic: { role: entity, name: city }
+    annotations: { queria: { semantic: { role: entity, name: city } } }
   - name: prefecture
     title: 都道府県名
   - name: city
@@ -64,7 +62,7 @@ fields:
   - name: corporate_number
     title: 法人番号
     description: 13 桁の法人番号。houjin_bangou と結合可。個人事業者等は NULL
-    semantic: { role: entity, name: corporate_number }
+    annotations: { queria: { semantic: { role: entity, name: corporate_number } } }
   - name: corporate_name
     title: 法人の名称
   - name: capacity
@@ -88,3 +86,6 @@ fields:
     description: 障害福祉の通常の指定基準を満たしているか
   - name: note
     title: 備考
+annotations:
+  queria:
+    themes: [social_security_health]

@@ -15,8 +15,6 @@ keywords:
   - 病院
   - 診療実績
   - 厚生労働省
-published: true
-themes: [social_security_health]
 sources:
   - path: https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
 fields:
@@ -41,3 +39,6 @@ fields:
   - name: patients
     title: 退院患者数
     description: 当該年度に退院または転棟した患者の数（件）。10 以上の値だけを持つ
+annotations:
+  queria:
+    themes: [social_security_health]

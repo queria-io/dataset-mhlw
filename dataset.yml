@@ -1,4 +1,6 @@
-spec_version: "0.1"
+# この dataset.yml は fdl commit が読む（FDL の dataset.json を YAML で書いたもの）。
+# 表の説明は models/ の *.table.yml に書く。表と列の型・NULL・行数は fdl commit がカタログから埋める。
+# Queria だけの項目（テーマ・カバー・AI 向けの説明・列の意味）は annotations.queria に書く。
 name: mhlw
 title: 厚生労働省
 description: |-
@@ -31,7 +33,6 @@ keywords:
   - 厚生労働省
 homepage: https://github.com/queria-io/dataset-mhlw
 language: ja
-themes: [social_security_health, labour]
 
 licenses:
   - JP-PDL-1.0
@@ -59,48 +60,6 @@ contributors:
 
 spatial_coverage: [JP]
 update_frequency: yearly
-cover: 🏥
-
-ai_context:
-  instructions: |
-    介護・障害福祉の事業所を地域ごとに数える、健診の検査値の分布を都道府県で比べる、
-    企業の女性活躍指標を見る、市区町村別の自殺者数を見る、といった用途に使う。
-    6つのスキーマは出どころも粒度も別物。
-    kaigo.establishment（22万3162件）と shougai.establishment（20万9452件）は
-    「事業所 × サービス種類」で1行。同じ事業所が複数のサービスを提供すると複数行になるので、
-    事業所数を数えるときは establishment_number で重複を除く。
-    緯度経度は元データに欠測（0.0）や国外の誤登録が混ざるため、日本の範囲外は NULL にしている
-    （kaigo で540件）。地図に出すときは NULL を除く。
-    ndb.health_checkup は特定健診の検査値の都道府県 × 性 × 年齢階級別の分布で、
-    個人単位ではなく集計値。
-    josei_katsuyaku.josei_company は企業の任意公表なので、開示していない企業の列は NULL になる。
-    「NULL＝0」ではない。育児休業取得率は雇用管理区分ごとに公表されるが、
-    先頭区分の代表値だけを収録している。
-    法人番号（corporate_number）で houjin_bangou / gbizinfo と結合できる。
-    介護・障害福祉の事業所は市区町村コードを持つので lg_code / address_br と結合できる。
-    jisatsu.suicide_municipality は 年 × 集計地（住居地／発見地）× 市区町村 × 性 × 属性区分 × 区分
-    の long 形式。政令指定都市と東京都特別区は市の行と区の行の両方を持つので、合計を出すときは
-    area_level = '区' を除く。市の行は区不詳を含まないので、市の総数には同じ市の区不詳を足す。秘匿された欄は NULL で、0 ではない。自殺死亡率は持たないので、
-    率が要るときは人口の表と city_code で結合する。
-    dpc は病院 × 年度の施設概要（hospital）と、病院 × MDC × 手術の有無の退院患者数（mdc_patients）。
-    10 症例未満の組み合わせは行が無い。病院は city_code で lg_code と結合できる。
-    kouseikyoku.insured_institution は全国の保険医療機関・保険薬局で、1 行が 10 桁の医療機関コード
-    （都道府県 2 桁 + 点数表 1 桁 + 医療機関番号 7 桁）。医科と歯科の両方の指定を受けた機関は 2 行ある。
-    市区町村コードと緯度経度は持たない。開設者と管理者の氏名は持たない。
-    iryo_joho_net.facility は医療情報ネットの病院・診療所・歯科診療所・助産所・薬局で、
-    市区町村コードと緯度経度を持つ。id は医療情報ネットの番号で、医療機関コードではない。
-    診療科は iryo_joho_net.speciality と id で結合する。
-    hellowork.office はハローワークの所在地（本所・出張所・分室のほかプラザや相談窓口も含む）、
-    hellowork.jurisdiction は安定所ごとの管轄区域の文、hellowork.jurisdiction_area はそれを項目に分けたもの。
-    3 つは prefecture_code・office_name・office_kind で結合する。緯度経度と市区町村コードは持たないので、
-    座標は full_address を geocode() に渡し、管轄は municipality_name を市区町村名と照合する。
-  synonyms: [医療機関コード, 保険医療機関, 介護事業所, 障害福祉サービス, 特定健診, NDB, 女性活躍推進, えるぼし]
-  examples:
-    - 市区町村別の介護事業所の数を出したい
-    - 訪問介護の事業所を地図に出したい
-    - 医療機関コードから病院の名称と所在地を引きたい
-    - 市区町村ごとに診療所の数を数えたい
-    - 都道府県別に特定健診の検査値の分布を比べたい
 
 schemas:
   - name: kaigo
@@ -121,3 +80,48 @@ schemas:
     title: 医療情報ネット
   - name: hellowork
     title: ハローワーク（公共職業安定所）
+
+annotations:
+  queria:
+    themes: [social_security_health, labour]
+    cover: 🏥
+    ai_context:
+      instructions: |
+        介護・障害福祉の事業所を地域ごとに数える、健診の検査値の分布を都道府県で比べる、
+        企業の女性活躍指標を見る、市区町村別の自殺者数を見る、といった用途に使う。
+        6つのスキーマは出どころも粒度も別物。
+        kaigo.establishment（22万3162件）と shougai.establishment（20万9452件）は
+        「事業所 × サービス種類」で1行。同じ事業所が複数のサービスを提供すると複数行になるので、
+        事業所数を数えるときは establishment_number で重複を除く。
+        緯度経度は元データに欠測（0.0）や国外の誤登録が混ざるため、日本の範囲外は NULL にしている
+        （kaigo で540件）。地図に出すときは NULL を除く。
+        ndb.health_checkup は特定健診の検査値の都道府県 × 性 × 年齢階級別の分布で、
+        個人単位ではなく集計値。
+        josei_katsuyaku.josei_company は企業の任意公表なので、開示していない企業の列は NULL になる。
+        「NULL＝0」ではない。育児休業取得率は雇用管理区分ごとに公表されるが、
+        先頭区分の代表値だけを収録している。
+        法人番号（corporate_number）で houjin_bangou / gbizinfo と結合できる。
+        介護・障害福祉の事業所は市区町村コードを持つので lg_code / address_br と結合できる。
+        jisatsu.suicide_municipality は 年 × 集計地（住居地／発見地）× 市区町村 × 性 × 属性区分 × 区分
+        の long 形式。政令指定都市と東京都特別区は市の行と区の行の両方を持つので、合計を出すときは
+        area_level = '区' を除く。市の行は区不詳を含まないので、市の総数には同じ市の区不詳を足す。秘匿された欄は NULL で、0 ではない。自殺死亡率は持たないので、
+        率が要るときは人口の表と city_code で結合する。
+        dpc は病院 × 年度の施設概要（hospital）と、病院 × MDC × 手術の有無の退院患者数（mdc_patients）。
+        10 症例未満の組み合わせは行が無い。病院は city_code で lg_code と結合できる。
+        kouseikyoku.insured_institution は全国の保険医療機関・保険薬局で、1 行が 10 桁の医療機関コード
+        （都道府県 2 桁 + 点数表 1 桁 + 医療機関番号 7 桁）。医科と歯科の両方の指定を受けた機関は 2 行ある。
+        市区町村コードと緯度経度は持たない。開設者と管理者の氏名は持たない。
+        iryo_joho_net.facility は医療情報ネットの病院・診療所・歯科診療所・助産所・薬局で、
+        市区町村コードと緯度経度を持つ。id は医療情報ネットの番号で、医療機関コードではない。
+        診療科は iryo_joho_net.speciality と id で結合する。
+        hellowork.office はハローワークの所在地（本所・出張所・分室のほかプラザや相談窓口も含む）、
+        hellowork.jurisdiction は安定所ごとの管轄区域の文、hellowork.jurisdiction_area はそれを項目に分けたもの。
+        3 つは prefecture_code・office_name・office_kind で結合する。緯度経度と市区町村コードは持たないので、
+        座標は full_address を geocode() に渡し、管轄は municipality_name を市区町村名と照合する。
+      synonyms: [医療機関コード, 保険医療機関, 介護事業所, 障害福祉サービス, 特定健診, NDB, 女性活躍推進, えるぼし]
+      examples:
+        - 市区町村別の介護事業所の数を出したい
+        - 訪問介護の事業所を地図に出したい
+        - 医療機関コードから病院の名称と所在地を引きたい
+        - 市区町村ごとに診療所の数を数えたい
+        - 都道府県別に特定健診の検査値の分布を比べたい

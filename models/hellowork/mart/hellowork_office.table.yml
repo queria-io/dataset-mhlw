@@ -14,8 +14,6 @@ keywords:
   - 所在地
   - 労働局
   - 厚生労働省
-published: true
-themes: [labour]
 sources:
   - title: 厚生労働省 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
     path: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
@@ -23,7 +21,7 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 都道府県コード（2 桁）
-    semantic: { role: entity, name: prefecture }
+    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
   - name: prefecture_name
     title: 都道府県名
   - name: name
@@ -60,3 +58,6 @@ fields:
     description: 一覧からリンクされた、各労働局のサイトの案内図・アクセスのページ
   - name: source_url
     title: 出典のページ
+annotations:
+  queria:
+    themes: [labour]

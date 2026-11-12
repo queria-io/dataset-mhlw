@@ -3,4 +3,6 @@ name: raw_mdc_patients
 description: |-
   DPC 退院患者調査 MDC 別医療機関別件数の生データ。年度ごとの表を main.py が
   long 形式に展開した NDJSON を読み込む。
-published: false
+annotations:
+  queria:
+    published: false

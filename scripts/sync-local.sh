@@ -8,7 +8,7 @@
 # 公開には `queria login` 済みであること（fdl がそこからトークンを取る）。
 # ログインしていない環境では FDL_TOKEN に書き込めるトークンを渡す。
 #
-# uv.lock は CI と同じく queria を最新に上げてから同期する。差分が出たらコミットする。
+# uv.lock は fdl と queria を最新に上げてから同期する。差分が出たらコミットする。
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -16,7 +16,7 @@ cd "$(dirname "$0")/.."
 # scripts/build.sh は submodule の shared/ を呼ぶ。clone 直後は空なので取得する
 git submodule update --init
 
-uv lock --upgrade-package queria
+uv lock --upgrade-package fdl-cli --upgrade-package queria
 uv sync
 bash scripts/build.sh
 
