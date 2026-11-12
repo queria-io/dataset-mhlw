@@ -17,3 +17,5 @@ package-lock.yml
 # Environment
 .env
 dist/
+
+.fdl/

@@ -1,7 +1,7 @@
 name: Sync
 
 # josei の取得元が日本国外からのアクセスを 403 で弾くため、GitHub ホストランナー（US）
-# ではビルドが通らない。公開は日本国内から scripts/sync-local.sh で行う（README「ビルド」）。
+# ではビルドが通らない。公開は日本国内から scripts/sync-local.sh で行う（MAINTAINING.md）。
 # 自動トリガーは持たせず、手動実行だけ残す。地域制限が解除されたら push / schedule を戻す。
 on:
   workflow_dispatch:
@@ -12,7 +12,13 @@ concurrency:
 
 jobs:
   sync:
-    uses: queria-io/dataset-shared/.github/workflows/sync.yml@main
+    # Queria への書き込みは GitHub Actions の OIDC で 1 時間のトークンを取って行う
+    permissions:
+      contents: read
+      id-token: write
+    uses: queria-io/dataset-shared/.github/workflows/sync.yml@f105231505e29dd4b833cb333eedfb5f22e2a959
     with:
       dataset_name: mhlw
-    secrets: inherit
+    secrets:
+      QUERIA_TOKEN: ${{ secrets.QUERIA_TOKEN }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}

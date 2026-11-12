@@ -6,22 +6,19 @@
 企業データベース）が日本国外からのアクセスを 403 で弾くためで、前段の AWS ロード
 バランサが落とすのでヘッダーや Cookie では通らない。GitHub ホストランナーは US に
 あり、この 1 ファイルだけ取得できない。そのため Sync は CI で自動実行せず、日本国内
-から次のスクリプトで公開する。
+から次のスクリプトで公開する。`queria login` 済みならトークンは要らない（ログインしていない環境では
+`FDL_TOKEN` に書き込めるトークンを渡す）。
 
 ```bash
-QUERIA_TOKEN=... bash scripts/sync-local.sh
+bash scripts/sync-local.sh
 ```
 
-このスクリプトは、CI の Sync と同じく queria を最新に上げてからビルド・公開する。
-ビルドだけを回す場合は queria 経由で実行する（dbt を直接実行しない）。
-
-```bash
-uv sync
-bash scripts/build.sh
-```
+このスクリプトは fdl と queria を最新に上げてから `scripts/build.sh` を流す。`scripts/build.sh` は
+`fdl checkout` で公開中のバージョンを取り出し、`main.py`（取得と dbt）を流し、`queria validate` を
+通してから `fdl commit` で新しいバージョンを公開する（`shared/scripts/build-fdl.sh`）。dbt を直接実行しない。
 
 配信元の地域制限が解除されたら、`.github/workflows/sync.yml` の `push` / `schedule`
-トリガーを戻して CI に返す。月次の Checkpoint は取得元に触れないので CI のままでよい。
+トリガーを戻して CI に返す。
 
 パイプラインは `main.py` が担う:
 

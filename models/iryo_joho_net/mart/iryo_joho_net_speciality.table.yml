@@ -14,8 +14,6 @@ keywords:
   - 歯科
   - 医療情報ネット
   - 厚生労働省
-published: true
-themes: [social_security_health]
 sources:
   - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
 fields:
@@ -30,3 +28,6 @@ fields:
   - name: as_of
     title: 時点
     description: オープンデータの基準日（6 月 1 日または 12 月 1 日）
+annotations:
+  queria:
+    themes: [social_security_health]

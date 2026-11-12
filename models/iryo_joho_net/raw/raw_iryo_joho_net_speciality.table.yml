@@ -3,4 +3,6 @@ name: raw_iryo_joho_net_speciality
 description: |-
   医療情報ネット オープンデータの診療科・診療時間票から、施設 × 診療科を main.py が
   取り出した NDJSON を読み込む。
-published: false
+annotations:
+  queria:
+    published: false

@@ -12,15 +12,13 @@ keywords:
   - ESG
   - 人的資本
   - 法人番号
-published: true
-themes: [labour]
 sources:
   - path: https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/
 fields:
   - name: corporate_number
     title: 法人番号
     description: 法人番号（13 桁）。未公表は NULL、一部に重複あり
-    semantic: { role: entity, name: corporate_number }
+    annotations: { queria: { semantic: { role: entity, name: corporate_number } } }
   - name: company_name
     title: 企業名
   - name: industry
@@ -78,3 +76,6 @@ fields:
   - name: last_updated
     title: データの最終更新日
     description: 企業が当該データを最終更新した日
+annotations:
+  queria:
+    themes: [labour]
