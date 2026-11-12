@@ -5,15 +5,13 @@
 # 403 で弾くため、GitHub ホストランナー（US）ではビルドが通らない。このリポだけ
 # CI で Sync せず、日本国内の環境からこのスクリプトで公開する。
 #
-# 必要なもの:
-#   QUERIA_TOKEN  公開先アカウントのトークン
+# 公開には `queria login` 済みであること（fdl がそこからトークンを取る）。
+# ログインしていない環境では FDL_TOKEN に書き込めるトークンを渡す。
 #
 # uv.lock は CI と同じく queria を最新に上げてから同期する。差分が出たらコミットする。
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
-
-: "${QUERIA_TOKEN:?QUERIA_TOKEN が設定されていない}"
 
 # scripts/build.sh は submodule の shared/ を呼ぶ。clone 直後は空なので取得する
 git submodule update --init

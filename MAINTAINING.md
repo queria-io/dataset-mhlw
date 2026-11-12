@@ -6,10 +6,11 @@
 企業データベース）が日本国外からのアクセスを 403 で弾くためで、前段の AWS ロード
 バランサが落とすのでヘッダーや Cookie では通らない。GitHub ホストランナーは US に
 あり、この 1 ファイルだけ取得できない。そのため Sync は CI で自動実行せず、日本国内
-から次のスクリプトで公開する。
+から次のスクリプトで公開する。`queria login` 済みならトークンは要らない（ログインしていない環境では
+`FDL_TOKEN` に書き込めるトークンを渡す）。
 
 ```bash
-QUERIA_TOKEN=... bash scripts/sync-local.sh
+bash scripts/sync-local.sh
 ```
 
 このスクリプトは、CI の Sync と同じく queria を最新に上げてからビルド・公開する。
