@@ -1,9 +1,14 @@
 name: Sync
 
-# josei の取得元が日本国外からのアクセスを 403 で弾くため、GitHub ホストランナー（US）
-# ではビルドが通らない。公開は日本国内から scripts/sync-local.sh で行う（MAINTAINING.md）。
-# 自動トリガーは持たせず、手動実行だけ残す。地域制限が解除されたら push / schedule を戻す。
 on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "*.md"
+  schedule:
+    # 地域における自殺の基礎資料は毎月 1 か月分ずつ追加される。毎月 25 日 04:00 JST に取る
+    # josei の取得元は日本国外を 403 で弾くので、Actions では前回の値を引き継ぐ (MAINTAINING.md)
+    - cron: "0 19 24 * *"
   workflow_dispatch:
 
 concurrency:
@@ -12,12 +17,9 @@ concurrency:
 
 jobs:
   sync:
-    # Queria への書き込みは GitHub Actions の OIDC で 1 時間のトークンを取って行う
-    permissions:
-      contents: read
-      id-token: write
-    uses: queria-io/dataset-shared/.github/workflows/sync.yml@67443c88b6ec355559c91bf866239e10073ccf83
+    uses: queria-io/dataset-shared/.github/workflows/sync.yml@main
     with:
       dataset_name: mhlw
-    secrets:
-      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      # 日本国内の実行で取得と dbt に約 55 分かかった
+      timeout_minutes: 120
+    secrets: inherit

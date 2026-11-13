@@ -8,8 +8,8 @@ CSV を ZIP で公開している。各行が 1 企業で、236 列に多数の�
 
 配信元は素の User-Agent を持たないリクエストを 403 で弾くため、ブラウザ相当の
 User-Agent を付けて取得する。加えて日本国外からのアクセスも 403 になる（前段の
-AWS ロードバランサが落とすため、ヘッダーや Cookie では通らない）。このパイプラインは
-日本国内から実行する必要がある。README「ビルド」を参照。
+AWS ロードバランサが落とすため、ヘッダーや Cookie では通らない）。日本国外から
+実行したときは GeoBlocked を送出し、main.py が前回のバージョンの値を引き継ぐ。
 """
 
 import csv
@@ -59,6 +59,10 @@ COLUMNS: dict[int, str] = {
 }
 
 
+class GeoBlocked(RuntimeError):
+    """配信元が日本国外からのアクセスとして 403 を返した。"""
+
+
 def _fetch_csv_text() -> str:
     """全体版 ZIP を取得し、同梱 CSV の本文（UTF-8 BOM 付き）を返す。"""
     req = urllib.request.Request(ZIP_URL, headers={"User-Agent": USER_AGENT})
@@ -67,10 +71,7 @@ def _fetch_csv_text() -> str:
             blob = resp.read()
     except urllib.error.HTTPError as e:
         if e.code == 403:
-            raise RuntimeError(
-                f"{ZIP_URL} が 403 を返した。配信元は日本国外からのアクセスを"
-                "受け付けないため、日本国内の環境から実行する必要がある。"
-            ) from e
+            raise GeoBlocked(f"{ZIP_URL} が 403 を返した") from e
         raise
     with zipfile.ZipFile(io.BytesIO(blob)) as zf:
         name = zf.namelist()[0]
