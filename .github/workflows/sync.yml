@@ -17,9 +17,14 @@ concurrency:
 
 jobs:
   sync:
-    uses: queria-io/dataset-shared/.github/workflows/sync.yml@main
+    # Queria への書き込みは GitHub Actions の OIDC で 1 時間のトークンを取って行う
+    permissions:
+      contents: read
+      id-token: write
+    uses: queria-io/dataset-shared/.github/workflows/sync.yml@47c67df0f7731174b0999ead76873c53b8905ca2
     with:
       dataset_name: mhlw
       # 日本国内の実行で取得と dbt に約 55 分かかった
       timeout_minutes: 120
-    secrets: inherit
+    secrets:
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
