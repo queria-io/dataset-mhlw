@@ -5,21 +5,8 @@
 Sync は GitHub Actions が毎月 25 日 04:00 JST に実行する（`.github/workflows/sync.yml`）。
 `main` への push と手動実行でも動く。
 
-`josei.py` の取得元（女性の活躍推進企業データベース）は日本国外からのアクセスを 403 で
-弾く。前段の AWS ロードバランサが落とすので、ヘッダーや Cookie では通らない。GitHub
-ホストランナーは US にあるため、Actions では `josei.py` が `GeoBlocked` を送出し、`main.py` が
-`JOSEI_KEEP_PREVIOUS` を立てる。`raw_josei_company` はそのとき前回のバージョンの行を
-そのまま引き継ぐ。ほかのテーブルは通常どおり作り直す。
-
-女性活躍推進企業のデータを新しくするときは、日本国内から次のスクリプトで公開する。
-`queria login` 済みならトークンは要らない（ログインしていない環境では `FDL_TOKEN` に
-書き込めるトークンを渡す）。
-
-```bash
-bash scripts/sync-local.sh
-```
-
-このスクリプトは fdl と queria を最新に上げてから `scripts/build.sh` を流す。`scripts/build.sh` は
+手元から公開するときは `scripts/build.sh` を流す。`queria login` 済みならトークンは要らない
+（ログインしていない環境では `FDL_TOKEN` に書き込めるトークンを渡す）。`scripts/build.sh` は
 `fdl checkout` で公開中のバージョンを取り出し、`main.py`（取得と dbt）を流し、`queria validate` を
 通してから `fdl commit` で新しいバージョンを公開する（`shared/scripts/build-fdl.sh`）。dbt を直接実行しない。
 
@@ -28,18 +15,16 @@ bash scripts/sync-local.sh
 1. `kaigo.py` が介護サービスの全サービス種類の事業所 CSV を取得し、英語列にそろえた NDJSON へ統合する。
 2. `shougai.py` が障害福祉サービス等の全サービス種類の事業所 CSV（最新提供時点）を取得し、英語列にそろえた NDJSON へ統合する。
 3. `ndb.py` が特定健診 検査値の Excel を取得し、long 形式の NDJSON へ統合する。
-4. `josei.py` が女性の活躍推進企業データベースの全体版 CSV を取得し、企業属性と主要指標
-   に絞った NDJSON へ整形する。
-5. `jisatsu.py` が地域における自殺の基礎資料の年計と月次の Excel（A7 表・A8 表）を取得し、
+4. `jisatsu.py` が地域における自殺の基礎資料の年計と月次の Excel（A7 表・A8 表）を取得し、
    long 形式の NDJSON へ統合する。月次は一覧ページから年ごとのページを辿って ZIP を見つける。
-6. `dpc.py` が DPC 退院患者調査の施設概要表と MDC 別件数を取得する。
-7. `kouseikyoku.py` が 8 つの地方厚生局のページから「コード内容別医療機関一覧表」の Excel を
+5. `dpc.py` が DPC 退院患者調査の施設概要表と MDC 別件数を取得する。
+6. `kouseikyoku.py` が 8 つの地方厚生局のページから「コード内容別医療機関一覧表」の Excel を
    取得し、1 機関 1 行の NDJSON へ整形する。開設者と管理者の氏名は読まない。
-8. `iryo_joho_net.py` が医療情報ネットのページから最新の時点の施設票と診療科・診療時間票を取得する。
-9. `hellowork.py` が厚生労働省の「都道府県労働局所在地一覧」の 47 都道府県のページと管轄一覧表
+7. `iryo_joho_net.py` が医療情報ネットのページから最新の時点の施設票と診療科・診療時間票を取得する。
+8. `hellowork.py` が厚生労働省の「都道府県労働局所在地一覧」の 47 都道府県のページと管轄一覧表
    （`antei.html`）から、公共職業安定所の所在地と管轄区域を取得する。47 都道府県がそろわない、
    表の見出しが変わった、などのときはビルドが止まるので `hellowork.py` を直す。
-10. dbt が raw → stg → mart をビルドする（型変換・座標クレンジング・ジオメトリ生成）。
+9. dbt が raw → stg → mart をビルドする（型変換・座標クレンジング・ジオメトリ生成）。
 
 コード内容別医療機関一覧表は局ごとにページの作りとファイルの分け方が違うので、
 `kouseikyoku.BUREAUS` に局ごとのページと、全体の一覧のファイルを選ぶ規則を持っている。

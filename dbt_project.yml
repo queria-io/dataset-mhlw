@@ -7,6 +7,15 @@ model-paths: ["models"]
 macro-paths: ["macros", "shared/macros"]
 clean-targets: ["target", "dbt_packages"]
 
+# 女性活躍推進企業 (josei_katsuyaku) は positive_ryouritsu データセットに移した。
+# ビルドは公開中のバージョンの上に積むので、残ったテーブルとビューをここで外す。
+# 外した後のバージョンが公開されたら、この on-run-start は消してよい
+on-run-start:
+  - "drop table if exists mhlw.josei_katsuyaku.company"
+  - "drop view if exists mhlw.josei_katsuyaku.stg_josei_company"
+  - "drop table if exists mhlw.josei_katsuyaku.raw_josei_company"
+  - "drop schema if exists mhlw.josei_katsuyaku"
+
 models:
   mhlw:
     +database: mhlw
@@ -25,13 +34,6 @@ models:
       mart:
         +materialized: table
     ndb:
-      raw:
-        +materialized: table
-      stg:
-        +materialized: view
-      mart:
-        +materialized: table
-    josei_katsuyaku:
       raw:
         +materialized: table
       stg:

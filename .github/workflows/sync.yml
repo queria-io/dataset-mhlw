@@ -7,7 +7,6 @@ on:
       - "*.md"
   schedule:
     # 地域における自殺の基礎資料は毎月 1 か月分ずつ追加される。毎月 25 日 04:00 JST に取る
-    # josei の取得元は日本国外を 403 で弾くので、Actions では前回の値を引き継ぐ (MAINTAINING.md)
     - cron: "0 19 24 * *"
   workflow_dispatch:
 

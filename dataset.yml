@@ -4,9 +4,9 @@
 name: mhlw
 title: 厚生労働省
 description: |-
-  厚生労働省が公開する、全国の保険医療機関・保険薬局（医療機関コード）と医療機関・薬局の所在地、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数、ハローワーク（公共職業安定所）の所在地と管轄区域です。事業所と医療情報ネットの施設は市区町村コード、企業は法人番号で他のデータセットと結合できます。
+  厚生労働省が公開する、全国の保険医療機関・保険薬局（医療機関コード）と医療機関・薬局の所在地、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数、ハローワーク（公共職業安定所）の所在地と管轄区域です。事業所と医療情報ネットの施設は市区町村コードで他のデータセットと結合できます。
 
-  出典：厚生労働省（地方厚生局「コード内容別医療機関一覧表」、医療情報ネット オープンデータ、介護サービス情報公表システム、障害福祉サービス等情報公表システム、NDB オープンデータ、女性の活躍推進企業データベース、地域における自殺の基礎資料、DPC 導入の影響評価に係る調査「退院患者調査」、都道府県労働局所在地一覧）を加工して作成。
+  出典：厚生労働省（地方厚生局「コード内容別医療機関一覧表」、医療情報ネット オープンデータ、介護サービス情報公表システム、障害福祉サービス等情報公表システム、NDB オープンデータ、地域における自殺の基礎資料、DPC 導入の影響評価に係る調査「退院患者調査」、都道府県労働局所在地一覧）を加工して作成。
 keywords:
   - 介護
   - 障害福祉
@@ -17,9 +17,6 @@ keywords:
   - 特定健診
   - 健康診断
   - NDB
-  - 女性活躍
-  - 両立支援
-  - ESG
   - 自殺統計
   - DPC
   - 病院
@@ -44,8 +41,6 @@ sources:
     path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
   - title: 介護サービス情報公表システム オープンデータ
     path: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
-  - title: 女性の活躍推進企業データベース オープンデータ
-    path: https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/
   - title: 地域における自殺の基礎資料
     path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
   - title: DPC 導入の影響評価に係る調査「退院患者調査」の結果報告
@@ -68,8 +63,6 @@ schemas:
     title: 障害福祉サービス
   - name: ndb
     title: 特定健診（NDB）
-  - name: josei_katsuyaku
-    title: 女性活躍推進企業
   - name: jisatsu
     title: 自殺統計（市区町村別）
   - name: dpc
@@ -88,8 +81,8 @@ annotations:
     ai_context:
       instructions: |
         介護・障害福祉の事業所を地域ごとに数える、健診の検査値の分布を都道府県で比べる、
-        企業の女性活躍指標を見る、市区町村別の自殺者数を見る、といった用途に使う。
-        6つのスキーマは出どころも粒度も別物。
+        市区町村別の自殺者数を見る、といった用途に使う。
+        スキーマごとに出どころも粒度も別物。
         kaigo.establishment（22万3162件）と shougai.establishment（20万9452件）は
         「事業所 × サービス種類」で1行。同じ事業所が複数のサービスを提供すると複数行になるので、
         事業所数を数えるときは establishment_number で重複を除く。
@@ -97,10 +90,7 @@ annotations:
         （kaigo で540件）。地図に出すときは NULL を除く。
         ndb.health_checkup は特定健診の検査値の都道府県 × 性 × 年齢階級別の分布で、
         個人単位ではなく集計値。
-        josei_katsuyaku.josei_company は企業の任意公表なので、開示していない企業の列は NULL になる。
-        「NULL＝0」ではない。育児休業取得率は雇用管理区分ごとに公表されるが、
-        先頭区分の代表値だけを収録している。
-        法人番号（corporate_number）で houjin_bangou / gbizinfo と結合できる。
+        kaigo と shougai の事業所は法人番号（corporate_number）で houjin_bangou と結合できる。
         介護・障害福祉の事業所は市区町村コードを持つので lg_code / address_br と結合できる。
         jisatsu.suicide_municipality は 年 × 集計地（住居地／発見地）× 市区町村 × 性 × 属性区分 × 区分
         の long 形式。政令指定都市と東京都特別区は市の行と区の行の両方を持つので、合計を出すときは
@@ -118,7 +108,7 @@ annotations:
         hellowork.jurisdiction は安定所ごとの管轄区域の文、hellowork.jurisdiction_area はそれを項目に分けたもの。
         3 つは prefecture_code・office_name・office_kind で結合する。緯度経度と市区町村コードは持たないので、
         座標は full_address を geocode() に渡し、管轄は municipality_name を市区町村名と照合する。
-      synonyms: [医療機関コード, 保険医療機関, 介護事業所, 障害福祉サービス, 特定健診, NDB, 女性活躍推進, えるぼし]
+      synonyms: [医療機関コード, 保険医療機関, 介護事業所, 障害福祉サービス, 特定健診, NDB]
       examples:
         - 市区町村別の介護事業所の数を出したい
         - 訪問介護の事業所を地図に出したい
