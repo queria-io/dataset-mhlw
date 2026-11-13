@@ -1,6 +1,6 @@
 # 厚生労働省
 
-厚生労働省が公開するオープンデータのうち、全国の保険医療機関・保険薬局（医療機関コード）、医療機関・薬局の所在地と診療科、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、企業が公表した女性活躍の指標、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数、ハローワーク（公共職業安定所）の所在地と管轄区域を、SQL で検索・集計できるテーブルにしたデータセットです。事業所は市区町村コードで lg_code・address_br と、企業は法人番号で houjin_bangou・gbizinfo と結合できます。
+厚生労働省が公開するオープンデータのうち、全国の保険医療機関・保険薬局（医療機関コード）、医療機関・薬局の所在地と診療科、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数、ハローワーク（公共職業安定所）の所在地と管轄区域を、SQL で検索・集計できるテーブルにしたデータセットです。事業所は市区町村コードで lg_code・address_br と、法人番号で houjin_bangou と結合できます。
 
 ## 出典と利用条件
 
@@ -11,7 +11,6 @@
 | [介護サービス情報公表システム オープンデータ](https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html) | `kaigo` |
 | [障害福祉サービス等情報公表システム オープンデータ（WAM NET 配信）](https://www.wam.go.jp/content/wamnet/pcpub/top/sfkopendata/) | `shougai` |
 | [NDB オープンデータ](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html) | `ndb` |
-| [女性の活躍推進企業データベース オープンデータ](https://positive-ryouritsu.mhlw.go.jp/positivedb/opendata/) | `josei_katsuyaku` |
 | [地域における自殺の基礎資料](https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html) | `jisatsu` |
 | [DPC 導入の影響評価に係る調査「退院患者調査」の結果報告](https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html) | `dpc` |
 | [都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧](https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html) | `hellowork` |
@@ -19,7 +18,6 @@
 - いずれも厚生労働省が公開するデータを加工して作成したものです
 - 厚生労働省ホームページ利用規約に基づく公共データ利用規約（第1.0版、PDL1.0）およびクリエイティブ・コモンズ表示 4.0（CC BY 4.0）に従います
 - 障害福祉サービス等情報公表システムのオープンデータは、官民データ活用推進基本法に基づき営利・非営利を問わず二次利用できます
-- 女性の活躍推進企業データベースは、政府標準利用規約第2.0版に準拠したオープンデータ利用規約（CC BY 4.0 互換）で提供されています
 - いずれも出典を表示すれば商用利用・再配布ができます
 
 ## テーブル
@@ -35,7 +33,6 @@
 | `kaigo.establishment` | 全国の介護サービス事業所。1 行が事業所 × サービス種類 |
 | `shougai.establishment` | 全国の障害福祉サービス等事業所。1 行が事業所 × サービス種類 |
 | `ndb.health_checkup` | 特定健診の検査値の分布。検査項目 × 都道府県 × 検査値階層 × 性 × 年齢階級ごとの受診者数 |
-| `josei_katsuyaku.company` | 企業が公表した女性活躍・両立支援の指標。1 行が 1 企業 |
 | `jisatsu.suicide_municipality` | 市区町村別・年別の自殺者数。年 × 集計地 × 市区町村 × 性 × 属性区分 × 区分 |
 | `jisatsu.suicide_municipality_monthly` | 市区町村別・月別の自殺者数。年月 × 集計地 × 市区町村 × 性 × 年齢階級 |
 | `dpc.hospital` | DPC 退院患者調査に参加した病院の施設概要。1 行が年度 × 病院 |
@@ -49,16 +46,6 @@
 SELECT count(DISTINCT establishment_number) AS establishments
 FROM mhlw.kaigo.establishment
 WHERE city_code = '13212' AND service_type = '訪問介護';
-```
-
-都道府県ごとに、女性管理職割合を公表している企業の数と平均を出す:
-
-```sql
-SELECT prefecture, count(*) AS companies, round(avg(women_in_management_pct), 1) AS avg_pct
-FROM mhlw.josei_katsuyaku.company
-WHERE women_in_management_pct IS NOT NULL
-GROUP BY ALL
-ORDER BY companies DESC;
 ```
 
 東京都の 2024 年の自殺者数（住居地）を出す（区の行を除いて足します）:
@@ -225,28 +212,6 @@ NDB（ナショナルデータベース）オープンデータの特定健診�
 - 年齢階級は特定健診の対象年齢（40〜74 歳）です。性ごとの小計「中計」は収録していません
 - 集計結果が 10 未満のセルは元データで秘匿されていて、`count` は NULL です
 
-## 女性活躍推進企業（josei_katsuyaku）
-
-女性活躍推進法・次世代育成支援対策推進法に基づく情報公表制度で、企業が任意に公表した指標です。
-
-| 列 | 内容 |
-| --- | --- |
-| `corporate_number` | 法人番号（13 桁）。`houjin_bangou` / `gbizinfo` と結合可 |
-| `company_name` | 企業名 |
-| `industry` / `industry_detail` | 業種・業種（詳細分類） |
-| `prefecture` / `company_size` | 都道府県・企業規模 |
-| `market_segment` / `securities_code` | 上場企業の市場区分・証券コード（非上場は NULL） |
-| `eruboshi_stage` / `kurumin` | えるぼし認定の段階・くるみん認定の状況 |
-| `women_in_kakaricho_pct` / `women_in_management_pct` / `women_on_board_pct` | 係長級・管理職・役員に占める女性割合(%) |
-| `gender_wage_gap_all_pct` / `gender_wage_gap_regular_pct` / `gender_wage_gap_nonregular_pct` | 男女の賃金の差異（全労働者・正規・非正規, %） |
-| `childcare_leave_male_pct` / `childcare_leave_female_pct` | 育児休業取得率（男性・女性, %） |
-| `avg_monthly_overtime_hours` / `paid_leave_rate_pct` | 一月当たりの平均残業時間・年次有給休暇取得率(%) |
-| `last_updated` | 企業がデータを最終更新した日 |
-
-- 任意公表のため、公表していない企業の指標は NULL です。NULL は 0 ではありません
-- 育児休業取得率は雇用管理区分ごとに公表されるため、先頭の区分（`childcare_leave_category`）の値だけを収録しています
-- 元データは 236 列の横持ちです。このテーブルは企業単位で 1 つの値になる主要指標に絞っています
-
 ## 自殺統計（jisatsu）
 
 警察庁の自殺統計を厚生労働省が市区町村別に再集計した資料の自殺日集計（A7 表・A8 表）を収録しています。`jisatsu.suicide_municipality` は確定値の年計で、2022 年から 2025 年です。
@@ -330,7 +295,7 @@ ORDER BY suicides DESC;
 
 ## 更新
 
-毎月 25 日に取り込みます。自殺の月次の集計はこのとき最新の月が追加され、確定値が出た月は差し替わります。女性の活躍推進企業データベースは日本国外からのアクセスを受け付けないため、自動の取り込みでは前回の値を引き継ぎ、日本国内の環境でビルドしたときに新しくなります。
+毎月 25 日に取り込みます。自殺の月次の集計はこのとき最新の月が追加され、確定値が出た月は差し替わります。
 
 ```bash
 git submodule update --init
