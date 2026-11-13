@@ -2,12 +2,18 @@
 
 ## ビルドと公開
 
-このデータセットは日本国内から実行する必要がある。`josei.py` の取得元（女性の活躍推進
-企業データベース）が日本国外からのアクセスを 403 で弾くためで、前段の AWS ロード
-バランサが落とすのでヘッダーや Cookie では通らない。GitHub ホストランナーは US に
-あり、この 1 ファイルだけ取得できない。そのため Sync は CI で自動実行せず、日本国内
-から次のスクリプトで公開する。`queria login` 済みならトークンは要らない（ログインしていない環境では
-`FDL_TOKEN` に書き込めるトークンを渡す）。
+Sync は GitHub Actions が毎月 25 日 04:00 JST に実行する（`.github/workflows/sync.yml`）。
+`main` への push と手動実行でも動く。
+
+`josei.py` の取得元（女性の活躍推進企業データベース）は日本国外からのアクセスを 403 で
+弾く。前段の AWS ロードバランサが落とすので、ヘッダーや Cookie では通らない。GitHub
+ホストランナーは US にあるため、Actions では `josei.py` が `GeoBlocked` を送出し、`main.py` が
+`JOSEI_KEEP_PREVIOUS` を立てる。`raw_josei_company` はそのとき前回のバージョンの行を
+そのまま引き継ぐ。ほかのテーブルは通常どおり作り直す。
+
+女性活躍推進企業のデータを新しくするときは、日本国内から次のスクリプトで公開する。
+`queria login` 済みならトークンは要らない（ログインしていない環境では `FDL_TOKEN` に
+書き込めるトークンを渡す）。
 
 ```bash
 bash scripts/sync-local.sh
@@ -16,9 +22,6 @@ bash scripts/sync-local.sh
 このスクリプトは fdl と queria を最新に上げてから `scripts/build.sh` を流す。`scripts/build.sh` は
 `fdl checkout` で公開中のバージョンを取り出し、`main.py`（取得と dbt）を流し、`queria validate` を
 通してから `fdl commit` で新しいバージョンを公開する（`shared/scripts/build-fdl.sh`）。dbt を直接実行しない。
-
-配信元の地域制限が解除されたら、`.github/workflows/sync.yml` の `push` / `schedule`
-トリガーを戻して CI に返す。
 
 パイプラインは `main.py` が担う:
 

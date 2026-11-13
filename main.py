@@ -18,6 +18,7 @@
 """
 
 import logging
+import os
 from pathlib import Path
 
 from dbt.cli.main import dbtRunner
@@ -75,8 +76,14 @@ def main() -> None:
     logger.info(f"  ndb_health_checkup.ndjson: {rows} rows")
 
     logger.info("4/10: josei (女性活躍推進企業)")
-    rows = josei.download_and_flatten(JOSEI_NDJSON_PATH)
-    logger.info(f"  josei_katsuyaku_company.ndjson: {rows} rows")
+    try:
+        rows = josei.download_and_flatten(JOSEI_NDJSON_PATH)
+        logger.info(f"  josei_katsuyaku_company.ndjson: {rows} rows")
+    except josei.GeoBlocked as e:
+        # 日本国外 (GitHub ホストランナー) からは取得できない。raw_josei_company は
+        # 前回のバージョンの行をそのまま引き継ぐ
+        logger.warning(f"  {e}。前回のバージョンの値を引き継ぐ")
+        os.environ["JOSEI_KEEP_PREVIOUS"] = "1"
 
     logger.info("5/10: jisatsu (地域における自殺の基礎資料)")
     rows = jisatsu.download_and_flatten(JISATSU_NDJSON_PATH)

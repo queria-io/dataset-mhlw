@@ -1,8 +1,16 @@
 {# 女性の活躍推進企業データベースの企業別生データ。
    main.py が全体版 CSV を主要列に絞って .queria/josei_katsuyaku_company.ndjson に保存する。
-   型変換は stg 以降で行うため全列 VARCHAR で読む。 #}
+   型変換は stg 以降で行うため全列 VARCHAR で読む。
+   取得元が日本国外からのアクセスを弾いたとき (main.py が JOSEI_KEEP_PREVIOUS を立てる) は、
+   前回のバージョンの行をそのまま引き継ぐ。 #}
 
 {{ config(materialized='table') }}
+
+{% if env_var('JOSEI_KEEP_PREVIOUS', '') %}
+
+select * from {{ this }}
+
+{% else %}
 
 select *
 from read_json(
@@ -34,3 +42,5 @@ from read_json(
         'last_updated': 'VARCHAR'
     }
 )
+
+{% endif %}
