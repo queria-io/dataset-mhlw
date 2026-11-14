@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: queria-io/dataset-shared/.github/workflows/sync.yml@47c67df0f7731174b0999ead76873c53b8905ca2
+    uses: queria-io/dataset-shared/.github/workflows/sync.yml@65a70f0ea45bbaebbf9adc0cedd61500ebe242e7
     with:
       dataset_name: mhlw
       # 日本国内の実行で取得と dbt に約 55 分かかった
