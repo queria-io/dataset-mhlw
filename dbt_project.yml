@@ -64,3 +64,5 @@ models:
         +materialized: table
       mart:
         +materialized: table
+    plans:
+      +materialized: table
