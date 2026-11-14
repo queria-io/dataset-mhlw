@@ -27,6 +27,7 @@ import jisatsu
 import kaigo
 import kouseikyoku
 import ndb
+import plans
 import shougai
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
@@ -58,43 +59,47 @@ def dbt_build() -> None:
 def main() -> None:
     WORK_DIR.mkdir(exist_ok=True)
 
-    logger.info("1/9: kaigo (介護サービス事業所)")
+    logger.info("1/10: kaigo (介護サービス事業所)")
     rows = kaigo.download_and_flatten(KAIGO_NDJSON_PATH)
     logger.info(f"  kaigo_establishment.ndjson: {rows} rows")
 
-    logger.info("2/9: shougai (障害福祉サービス等事業所)")
+    logger.info("2/10: shougai (障害福祉サービス等事業所)")
     rows = shougai.download_and_flatten(SHOUGAI_NDJSON_PATH)
     logger.info(f"  shougai_establishment.ndjson: {rows} rows")
 
-    logger.info("3/9: ndb (特定健診 検査値分布)")
+    logger.info("3/10: ndb (特定健診 検査値分布)")
     rows = ndb.download_and_flatten(NDB_NDJSON_PATH)
     logger.info(f"  ndb_health_checkup.ndjson: {rows} rows")
 
-    logger.info("4/9: jisatsu (地域における自殺の基礎資料)")
+    logger.info("4/10: jisatsu (地域における自殺の基礎資料)")
     rows = jisatsu.download_and_flatten(JISATSU_NDJSON_PATH)
     logger.info(f"  jisatsu_municipality.ndjson: {rows} rows")
     rows = jisatsu.download_and_flatten_monthly(JISATSU_MONTHLY_NDJSON_PATH)
     logger.info(f"  jisatsu_municipality_monthly.ndjson: {rows} rows")
 
-    logger.info("5/9: dpc (DPC 退院患者調査)")
+    logger.info("5/10: dpc (DPC 退院患者調査)")
     hospitals, mdc = dpc.download_and_flatten(DPC_HOSPITAL_NDJSON_PATH, DPC_MDC_NDJSON_PATH)
     logger.info(f"  dpc_hospital.ndjson: {hospitals} rows, dpc_mdc_patients.ndjson: {mdc} rows")
 
-    logger.info("6/9: kouseikyoku (コード内容別医療機関一覧表)")
+    logger.info("6/10: kouseikyoku (コード内容別医療機関一覧表)")
     rows = kouseikyoku.download_and_flatten(KOUSEIKYOKU_NDJSON_PATH)
     logger.info(f"  kouseikyoku_insured_institution.ndjson: {rows} rows")
 
-    logger.info("7/9: iryo_joho_net (医療情報ネット)")
+    logger.info("7/10: iryo_joho_net (医療情報ネット)")
     facilities, specialities = iryo_joho_net.download_and_flatten(
         IRYO_JOHO_NET_FACILITY_NDJSON_PATH, IRYO_JOHO_NET_SPECIALITY_NDJSON_PATH
     )
     logger.info(f"  iryo_joho_net_facility.ndjson: {facilities} rows, iryo_joho_net_speciality.ndjson: {specialities} rows")
 
-    logger.info("8/9: hellowork (公共職業安定所の所在地と管轄区域)")
+    logger.info("8/10: hellowork (公共職業安定所の所在地と管轄区域)")
     offices, areas = hellowork.download_and_flatten(HELLOWORK_OFFICE_NDJSON_PATH, HELLOWORK_JURISDICTION_NDJSON_PATH)
     logger.info(f"  hellowork_office.ndjson: {offices} rows, hellowork_jurisdiction.ndjson: {areas} rows")
 
-    logger.info("9/9: dbt build")
+    logger.info("9/10: plans (行政事業レビューが挙げる計画・通知等)")
+    plans.download_plans()
+    plans.build_plans_parquet()
+
+    logger.info("10/10: dbt build")
     dbt_build()
 
 

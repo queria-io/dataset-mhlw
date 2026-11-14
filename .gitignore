@@ -19,3 +19,7 @@ package-lock.yml
 dist/
 
 .fdl/
+
+# 計画・通知等の PDF と Parquet (毎回取り直すのでコミットしない)
+data/plans/
+data/parquet/plans_*.parquet
