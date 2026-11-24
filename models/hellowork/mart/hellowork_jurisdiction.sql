@@ -12,5 +12,5 @@ select
     jurisdiction,
     len(jurisdiction_items) as item_count,
     source_url
-from {{ ref('raw_hellowork_jurisdiction') }}
+from {{ ref('stg_hellowork_jurisdiction') }}
 order by prefecture_code, office_kind, office_name

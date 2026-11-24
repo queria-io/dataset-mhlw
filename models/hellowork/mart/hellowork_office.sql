@@ -6,7 +6,7 @@
 
 with jurisdiction as (
     select distinct prefecture_code, office_name, office_kind
-    from {{ ref('raw_hellowork_jurisdiction') }}
+    from {{ ref('stg_hellowork_jurisdiction') }}
 )
 
 select
@@ -27,6 +27,6 @@ select
     o.phone_text,
     o.guide_url,
     o.source_url
-from {{ ref('raw_hellowork_office') }} o
+from {{ ref('stg_hellowork_office') }} o
 left join jurisdiction j using (prefecture_code, office_name, office_kind)
 order by o.prefecture_code, o.source_url, o.name

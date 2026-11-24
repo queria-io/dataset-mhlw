@@ -19,7 +19,7 @@ with items as (
         office_kind,
         unnest(jurisdiction_items) as area_text,
         unnest(generate_series(1, len(jurisdiction_items))) as item_order
-    from {{ ref('raw_hellowork_jurisdiction') }}
+    from {{ ref('stg_hellowork_jurisdiction') }}
 )
 
 select

@@ -7,5 +7,5 @@ select
     speciality_code,
     speciality_name,
     cast(as_of as DATE) as as_of
-from {{ ref('raw_iryo_joho_net_speciality') }}
+from {{ ref('stg_iryo_joho_net_speciality') }}
 order by id, speciality_code
