@@ -23,3 +23,6 @@ dist/
 # 計画・通知等の PDF と Parquet (毎回取り直すのでコミットしない)
 data/plans/
 data/parquet/plans_*.parquet
+
+# 共通のスクリプト (git clone https://github.com/queria-io/dataset-shared.git shared)
+shared/

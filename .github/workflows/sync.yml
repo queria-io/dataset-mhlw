@@ -3,8 +3,6 @@ name: Sync
 on:
   push:
     branches: [main]
-    paths-ignore:
-      - "*.md"
   schedule:
     # 地域における自殺の基礎資料は毎月 1 か月分ずつ追加される。毎月 25 日 04:00 JST に取る
     - cron: "0 19 24 * *"
@@ -20,7 +18,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
-    uses: queria-io/dataset-shared/.github/workflows/sync.yml@65a70f0ea45bbaebbf9adc0cedd61500ebe242e7
+    uses: queria-io/dataset-shared/.github/workflows/sync.yml@main
     with:
       dataset_name: mhlw
       # 日本国内の実行で取得と dbt に約 55 分かかった

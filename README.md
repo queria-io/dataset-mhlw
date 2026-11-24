@@ -312,7 +312,7 @@ ORDER BY suicides DESC;
 毎月 25 日に取り込みます。自殺の月次の集計はこのとき最新の月が追加され、確定値が出た月は差し替わります。
 
 ```bash
-git submodule update --init
+git clone https://github.com/queria-io/dataset-shared.git shared  # 初回のみ。更新は git -C shared pull
 uv sync
 bash scripts/build.sh
 ```
