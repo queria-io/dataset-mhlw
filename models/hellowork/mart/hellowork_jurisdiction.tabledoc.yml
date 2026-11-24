@@ -1,5 +1,4 @@
-schema: hellowork
-name: jurisdiction
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: ハローワークの管轄区域
 description: |-
   全国の公共職業安定所（ハローワーク）が受け持つ区域です。厚生労働省の「都道府県労働局所在地一覧」の管轄一覧表を 47 都道府県分まとめています。1 行が 1 つの安定所（本所・出張所・分室）です。
@@ -8,7 +7,7 @@ description: |-
   - 区域は一覧の文のまま持ちます（例「土浦市、つくば市、かすみがうら市、稲敷郡のうち阿見町」）。項目ごとに分けたものは jurisdiction_area にあります
   - 一覧の更新が遅れて、合併・改称の前の市町村名が残っていることがあります（例 篠山市）
   - 宮城県の塩釜、京都府の二条労働・千本労働の分室、福岡県の門司（港湾労働課）は、所在地の表に行がありません
-keywords:
+topics:
   - ハローワーク
   - 公共職業安定所
   - 管轄区域
@@ -16,13 +15,12 @@ keywords:
   - 労働局
   - 厚生労働省
 sources:
-  - title: 厚生労働省 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
-    path: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
-fields:
+  - roudoukyoku
+columns:
   - name: prefecture_code
     title: 都道府県コード
     description: 都道府県コード（2 桁）
-    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+    entity: prefecture
   - name: prefecture_name
     title: 都道府県名
   - name: name
@@ -42,6 +40,3 @@ fields:
     description: 管轄区域を括弧の外の読点で区切った項目の数。jurisdiction_area の行数と同じ
   - name: source_url
     title: 出典のページ
-annotations:
-  queria:
-    themes: [labour]

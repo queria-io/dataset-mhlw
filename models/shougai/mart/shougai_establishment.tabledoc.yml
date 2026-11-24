@@ -1,20 +1,19 @@
-schema: shougai
-name: establishment
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 障害福祉サービス等事業所
 description: |-
   全国の障害福祉サービス等事業所の所在地・緯度経度・法人番号・サービス種類・定員です。
 
   - 1 行は事業所 × サービス種類です。事業所数は establishment_number の重複を除いて数えてください
   - 欠測や日本国外の誤登録の緯度経度は NULL です
-keywords:
+topics:
   - 障害福祉
   - 福祉
   - 事業所
   - GIS
   - 法人番号
 sources:
-  - path: https://www.wam.go.jp/content/wamnet/pcpub/top/sfkopendata/
-fields:
+  - sfkopendata
+columns:
   - name: establishment_number
     title: 事業所番号
     description: 障害福祉サービス等事業所番号。サービス種類が異なると同一番号が複数行に現れる
@@ -28,15 +27,15 @@ fields:
   - name: local_gov_code
     title: 地方公共団体コード
     description: 全国地方公共団体コード（5 桁・チェックデジットなし）
-    annotations: { queria: { semantic: { role: entity, name: city } } }
+    entity: city
   - name: prefecture_code
     title: 都道府県コード
     description: 地方公共団体コードの上 2 桁
-    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+    entity: prefecture
   - name: city_code
     title: 市区町村コード
     description: 5 桁の全国地方公共団体コード。lg_code / address_br と結合可
-    annotations: { queria: { semantic: { role: entity, name: city } } }
+    entity: city
   - name: designating_authority
     title: 指定機関名
     description: 事業所を指定した自治体（都道府県・政令市・中核市など）の名称
@@ -63,7 +62,7 @@ fields:
   - name: corporate_number
     title: 法人番号
     description: 13 桁の法人番号。houjin_bangou と結合可。未登録は NULL
-    annotations: { queria: { semantic: { role: entity, name: corporate_number } } }
+    entity: corporate_number
   - name: corporate_name
     title: 法人の名称
   - name: corporate_name_kana
@@ -90,6 +89,3 @@ fields:
   - name: system_no
     title: システム番号
     description: 障害福祉サービス等情報公表システム内の固有番号（連番）
-annotations:
-  queria:
-    themes: [social_security_health]

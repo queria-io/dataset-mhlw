@@ -1,12 +1,11 @@
-schema: iryo_joho_net
-name: speciality
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 医療機関の診療科（医療情報ネット）
 description: |-
   病院・診療所・歯科診療所が医療情報ネット（ナビイ）で公表している診療科です。1 行が 施設 × 診療科です。
 
   - 施設の名称や所在地は facility と id で結合してください
   - 診療時間は収録していません
-keywords:
+topics:
   - 診療科
   - 医療機関
   - 病院
@@ -15,8 +14,8 @@ keywords:
   - 医療情報ネット
   - 厚生労働省
 sources:
-  - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
-fields:
+  - newpage_43373
+columns:
   - name: id
     title: ID
     description: 医療情報ネットの施設の番号。facility と結合するキー
@@ -28,6 +27,3 @@ fields:
   - name: as_of
     title: 時点
     description: オープンデータの基準日（6 月 1 日または 12 月 1 日）
-annotations:
-  queria:
-    themes: [social_security_health]

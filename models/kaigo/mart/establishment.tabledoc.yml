@@ -1,20 +1,19 @@
-schema: kaigo
-name: establishment
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 介護サービス事業所
 description: |-
   全国の介護サービス事業所の所在地・緯度経度・法人番号・サービス種類・定員です。
 
   - 1 行は事業所 × サービス種類です。事業所数は establishment_number の重複を除いて数えてください
   - 欠測や日本国外の誤登録の緯度経度は NULL です
-keywords:
+topics:
   - 介護
   - 福祉
   - 事業所
   - GIS
   - 法人番号
 sources:
-  - path: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
-fields:
+  - kaigo-kouhyou_opendata
+columns:
   - name: establishment_number
     title: 事業所番号
     description: 介護保険事業所番号（10 桁）。サービス種類が異なると同一番号が複数行に現れる
@@ -28,15 +27,15 @@ fields:
   - name: local_gov_code
     title: 地方公共団体コード
     description: 全国地方公共団体コード（6 桁 = 5 桁自治体コード + チェックデジット）
-    annotations: { queria: { semantic: { role: entity, name: city } } }
+    entity: city
   - name: prefecture_code
     title: 都道府県コード
     description: 地方公共団体コードの上 2 桁
-    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+    entity: prefecture
   - name: city_code
     title: 市区町村コード
     description: 地方公共団体コードの上 5 桁（チェックデジットを除く）。lg_code / address_br と結合可
-    annotations: { queria: { semantic: { role: entity, name: city } } }
+    entity: city
   - name: prefecture
     title: 都道府県名
   - name: city
@@ -62,7 +61,7 @@ fields:
   - name: corporate_number
     title: 法人番号
     description: 13 桁の法人番号。houjin_bangou と結合可。個人事業者等は NULL
-    annotations: { queria: { semantic: { role: entity, name: corporate_number } } }
+    entity: corporate_number
   - name: corporate_name
     title: 法人の名称
   - name: capacity
@@ -86,6 +85,3 @@ fields:
     description: 障害福祉の通常の指定基準を満たしているか
   - name: note
     title: 備考
-annotations:
-  queria:
-    themes: [social_security_health]

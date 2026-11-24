@@ -1,20 +1,19 @@
-schema: ndb
-name: health_checkup
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 特定健診 検査値分布
 description: |-
   特定健診の検査値の分布を、検査項目 × 都道府県 × 検査値階層 × 性 × 年齢階級ごとの受診者数で持つ集計表です（NDB オープンデータ第 11 回、2023 年度）。
 
   - 集計結果が 10 未満のセルは秘匿されていて、count は NULL です
   - 検査値階層（value_class）の表現は検査項目ごとに異なります
-keywords:
+topics:
   - 特定健診
   - 健康診断
   - NDB
   - 医療
   - 厚生労働省
 sources:
-  - path: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html
-fields:
+  - '0000177182'
+columns:
   - name: fiscal_year
     title: 年度
     description: 集計対象年度（西暦）
@@ -27,7 +26,7 @@ fields:
   - name: prefecture_code
     title: 都道府県コード
     description: 都道府県コード（2 桁）。都道府県判別不可は NULL
-    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+    entity: prefecture
   - name: prefecture
     title: 都道府県名
     description: 施設所在地の都道府県名。判別不可は「都道府県判別不可」
@@ -43,6 +42,3 @@ fields:
   - name: count
     title: 人数
     description: 当該区分に該当する受診者数。集計結果 10 未満の秘匿セルは NULL
-annotations:
-  queria:
-    themes: [social_security_health]

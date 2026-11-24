@@ -1,5 +1,4 @@
-schema: hellowork
-name: jurisdiction_area
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: ハローワークの管轄区域（項目別）
 description: |-
   公共職業安定所（ハローワーク）の管轄区域を、管轄一覧表の読点で区切った項目ごとに 1 行にしたものです。市区町村の単位で管轄を地図に塗るときに使います。
@@ -8,20 +7,19 @@ description: |-
   - 「稲敷郡のうち阿見町」「青森市（黒石公共職業安定所の管轄区域を除く。）」のように絞り込みの付いた項目は name_only が false で、municipality_name に先頭の市区町村・郡の名前が入ります
   - 「倉敷市のうち児島稗田町、児島柳田町」のように町・字が続くとき、後ろの項目（児島柳田町）は町・字の名前です。字の名前は市区町村と同じ語尾を持つことがあるので、after_partial が true の行は市区町村の一覧と照合して確かめてください
   - 市区町村コードは持ちません。名前で市区町村の一覧と照合してください。合併・改称の前の名前が残っていることがあります
-keywords:
+topics:
   - ハローワーク
   - 公共職業安定所
   - 管轄区域
   - 市区町村
   - 厚生労働省
 sources:
-  - title: 厚生労働省 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
-    path: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
-fields:
+  - roudoukyoku
+columns:
   - name: prefecture_code
     title: 都道府県コード
     description: 都道府県コード（2 桁）
-    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+    entity: prefecture
   - name: prefecture_name
     title: 都道府県名
   - name: office_name
@@ -45,6 +43,3 @@ fields:
   - name: after_partial
     title: 「のうち」の後ろ
     description: 同じ安定所の前の項目に「のうち」があれば true。この行の項目は、前の項目の市区町村の中の町・字のことがある
-annotations:
-  queria:
-    themes: [labour]

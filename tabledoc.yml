@@ -1,0 +1,116 @@
+$schema: https://tabledoc.queria.io/schemas/dataset/v1.json
+name: mhlw
+title: 厚生労働省
+description: |-
+  厚生労働省が公開する、全国の保険医療機関・保険薬局（医療機関コード）と医療機関・薬局の所在地、介護・障害福祉サービス事業所、特定健診の検査値の分布（NDB）、市区町村別の自殺者数、DPC 調査に参加した病院の MDC 別の退院患者数、ハローワーク（公共職業安定所）の所在地と管轄区域です。行政事業レビューのシートが関係する計画・通知等として挙げる厚生労働省のサイトの PDF も、ページごとの本文を持ちます。事業所と医療情報ネットの施設は市区町村コードで他のデータセットと結合できます。
+
+  出典：厚生労働省（地方厚生局「コード内容別医療機関一覧表」、医療情報ネット オープンデータ、介護サービス情報公表システム、障害福祉サービス等情報公表システム、NDB オープンデータ、地域における自殺の基礎資料、DPC 導入の影響評価に係る調査「退院患者調査」、都道府県労働局所在地一覧）を加工して作成。
+image: cover.png
+topics:
+  - 介護
+  - 障害福祉
+  - 福祉
+  - 事業所
+  - GIS
+  - 法人番号
+  - 特定健診
+  - 健康診断
+  - NDB
+  - 自殺統計
+  - DPC
+  - 病院
+  - 医療機関コード
+  - 保険医療機関
+  - 診療所
+  - 薬局
+  - 医療情報ネット
+  - ハローワーク
+  - 公共職業安定所
+  - 厚生労働省
+  - 行政事業レビュー
+  - 計画・通知等
+synonyms:
+  - 医療機関コード
+  - 保険医療機関
+  - 介護事業所
+  - 障害福祉サービス
+  - 特定健診
+  - NDB
+language: ja
+licenses:
+  - JP-PDL-1.0
+sources:
+  - id: rssystem
+    title: 行政事業レビュー見える化サイト（行政改革推進本部事務局）
+    url: https://rssystem.go.jp
+  - id: shitei
+    title: 地方厚生局 コード内容別医療機関一覧表
+    url: https://kouseikyoku.mhlw.go.jp/kantoshinetsu/chousa/shitei.html
+  - id: newpage_43373
+    title: 医療情報ネット オープンデータ
+    url: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/kenkou_iryou/iryou/newpage_43373.html
+  - id: kaigo-kouhyou_opendata
+    title: 介護サービス情報公表システム オープンデータ
+    url: https://www.mhlw.go.jp/stf/kaigo-kouhyou_opendata.html
+  - id: '0000140901'
+    title: 地域における自殺の基礎資料
+    url: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000140901.html
+  - id: newpage_00137
+    title: DPC 導入の影響評価に係る調査「退院患者調査」の結果報告
+    url: https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
+  - id: roudoukyoku
+    title: 都道府県労働局（労働基準監督署、公共職業安定所）所在地一覧
+    url: https://www.mhlw.go.jp/kouseiroudoushou/shozaiannai/roudoukyoku/index.html
+  - id: code_ichiran
+    title: 北海道厚生局 コード内容別医療機関一覧表
+    url: https://kouseikyoku.mhlw.go.jp/hokkaido/gyomu/gyomu/hoken_kikan/code_ichiran.html
+  - id: itiran
+    title: 東北厚生局 管内保険医療機関・保険薬局の指定状況等一覧
+    url: https://kouseikyoku.mhlw.go.jp/tohoku/gyomu/gyomu/hoken_kikan/itiran.html
+  - id: newpage_00287
+    title: 東海北陸厚生局 コード内容別医療機関一覧表
+    url: https://kouseikyoku.mhlw.go.jp/tokaihokuriku/newpage_00287.html
+  - id: shinkishitei
+    title: 近畿厚生局 保険医療機関・保険薬局の指定一覧
+    url: https://kouseikyoku.mhlw.go.jp/kinki/tyousa/shinkishitei.html
+  - id: iryoukikanshitei
+    title: 中国四国厚生局 保険医療機関等の指定状況等
+    url: https://kouseikyoku.mhlw.go.jp/chugokushikoku/chousaka/iryoukikanshitei.html
+  - id: shitei-2
+    title: 四国厚生支局 保険医療機関・保険薬局の管内指定状況等
+    url: https://kouseikyoku.mhlw.go.jp/shikoku/gyomu/gyomu/hoken_kikan/shitei/index.html
+  - id: index_00006
+    title: 九州厚生局 コード内容別医療機関一覧表
+    url: https://kouseikyoku.mhlw.go.jp/kyushu/gyomu/gyomu/hoken_kikan/index_00006.html
+  - id: '0000177182'
+    url: https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/0000177182.html
+  - id: sfkopendata
+    url: https://www.wam.go.jp/content/wamnet/pcpub/top/sfkopendata/
+contributors:
+  - id: mhlw
+    title: 厚生労働省
+    url: https://www.mhlw.go.jp/
+    roles:
+      - rightsHolder
+spatial_coverage:
+  - JP
+update_frequency: yearly
+schemas:
+  - name: plans
+    title: 計画・通知等
+  - name: kaigo
+    title: 介護サービス
+  - name: shougai
+    title: 障害福祉サービス
+  - name: ndb
+    title: 特定健診（NDB）
+  - name: jisatsu
+    title: 自殺統計（市区町村別）
+  - name: dpc
+    title: DPC 退院患者調査
+  - name: kouseikyoku
+    title: 保険医療機関・保険薬局（地方厚生局）
+  - name: iryo_joho_net
+    title: 医療情報ネット
+  - name: hellowork
+    title: ハローワーク（公共職業安定所）

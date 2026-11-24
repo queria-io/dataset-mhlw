@@ -1,8 +1,5 @@
-schema: iryo_joho_net
-name: raw_iryo_joho_net_speciality
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 description: |-
   医療情報ネット オープンデータの診療科・診療時間票から、施設 × 診療科を main.py が
   取り出した NDJSON を読み込む。
-annotations:
-  queria:
-    published: false
+hidden: true

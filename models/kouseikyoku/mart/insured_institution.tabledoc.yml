@@ -1,5 +1,4 @@
-schema: kouseikyoku
-name: insured_institution
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: 保険医療機関・保険薬局
 description: |-
   全国の保険医療機関・保険薬局の医療機関コード・名称・所在地・電話番号・指定年月日・病床数・診療科です。地方厚生局が毎月公開する「コード内容別医療機関一覧表」を 8 局分まとめています。1 行が 1 医療機関コードです。
@@ -8,7 +7,7 @@ description: |-
   - 医科と歯科の両方の指定を受けた機関は点数表ごとに 2 行あります。もう一方の番号は annex_institution_number にあります
   - 開設者と管理者は個人の氏名を含むため収録していません
   - 局によって一覧の時点が 1 か月ずれることがあります（as_of）
-keywords:
+topics:
   - 医療機関コード
   - 保険医療機関
   - 保険薬局
@@ -20,30 +19,22 @@ keywords:
   - 地方厚生局
   - 厚生労働省
 sources:
-  - title: 北海道厚生局 コード内容別医療機関一覧表
-    path: https://kouseikyoku.mhlw.go.jp/hokkaido/gyomu/gyomu/hoken_kikan/code_ichiran.html
-  - title: 東北厚生局 管内保険医療機関・保険薬局の指定状況等一覧
-    path: https://kouseikyoku.mhlw.go.jp/tohoku/gyomu/gyomu/hoken_kikan/itiran.html
-  - title: 関東信越厚生局 保険医療機関・保険薬局の指定等一覧
-    path: https://kouseikyoku.mhlw.go.jp/kantoshinetsu/chousa/shitei.html
-  - title: 東海北陸厚生局 コード内容別医療機関一覧表
-    path: https://kouseikyoku.mhlw.go.jp/tokaihokuriku/newpage_00287.html
-  - title: 近畿厚生局 保険医療機関・保険薬局の指定一覧
-    path: https://kouseikyoku.mhlw.go.jp/kinki/tyousa/shinkishitei.html
-  - title: 中国四国厚生局 保険医療機関等の指定状況等
-    path: https://kouseikyoku.mhlw.go.jp/chugokushikoku/chousaka/iryoukikanshitei.html
-  - title: 四国厚生支局 保険医療機関・保険薬局の管内指定状況等
-    path: https://kouseikyoku.mhlw.go.jp/shikoku/gyomu/gyomu/hoken_kikan/shitei/index.html
-  - title: 九州厚生局 コード内容別医療機関一覧表
-    path: https://kouseikyoku.mhlw.go.jp/kyushu/gyomu/gyomu/hoken_kikan/index_00006.html
-fields:
+  - code_ichiran
+  - itiran
+  - shitei
+  - newpage_00287
+  - shinkishitei
+  - iryoukikanshitei
+  - shitei-2
+  - index_00006
+columns:
   - name: medical_institution_code
     title: 医療機関コード
     description: 10 桁の医療機関コード（都道府県 2 桁 + 点数表 1 桁 + 医療機関番号 7 桁）。点数表は 1 が医科、3 が歯科、4 が調剤（薬局）
   - name: prefecture_code
     title: 都道府県コード
     description: 所在地の都道府県コード（2 桁）
-    annotations: { queria: { semantic: { role: entity, name: prefecture } } }
+    entity: prefecture
   - name: fee_schedule
     title: 点数表
     description: 医科／歯科／薬局。一覧表の種類
@@ -55,7 +46,7 @@ fields:
   - name: postal_code
     title: 郵便番号
     description: 7 桁の郵便番号。所在地の先頭の「〒」から切り出した値
-    annotations: { queria: { semantic: { role: entity, name: postal_code } } }
+    entity: postal_code
   - name: address
     title: 所在地
     description: 郵便番号を除いた所在地（元データの表記のまま）
@@ -117,6 +108,3 @@ fields:
   - name: bureau
     title: 地方厚生局
     description: hokkaido / tohoku / kantoshinetsu / tokaihokuriku / kinki / chugokushikoku / shikoku / kyushu
-annotations:
-  queria:
-    themes: [social_security_health]

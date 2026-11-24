@@ -1,12 +1,11 @@
-schema: dpc
-name: mdc_patients
+$schema: https://tabledoc.queria.io/schemas/table/v1.json
 title: DPC 病院別・MDC 別の退院患者数
 description: |-
   DPC 退院患者調査に参加した病院ごとの退院患者数を、MDC（主要診断群 18 区分）と手術の有無で分けて持ちます（2016〜2023 年度）。
 
   - 症例数が 10 未満の組み合わせと 0 件の組み合わせは公表されていないため行がありません
   - 病院の所在地や病床数は hospital と fiscal_year・notification_number・serial_number で結合してください。serial_number は NULL を含むので、`is not distinct from` で比べます
-keywords:
+topics:
   - DPC
   - MDC
   - 主要診断群
@@ -16,8 +15,8 @@ keywords:
   - 診療実績
   - 厚生労働省
 sources:
-  - path: https://www.mhlw.go.jp/stf/shingi2/newpage_00137.html
-fields:
+  - newpage_00137
+columns:
   - name: fiscal_year
     title: 年度
     description: 調査対象の年度（西暦）。4 月から翌年 3 月までに退院した患者を集計
@@ -39,6 +38,3 @@ fields:
   - name: patients
     title: 退院患者数
     description: 当該年度に退院または転棟した患者の数（件）。10 以上の値だけを持つ
-annotations:
-  queria:
-    themes: [social_security_health]
